@@ -1,0 +1,26 @@
+      <form class="form-signin" method="post">
+
+       {{ form.hidden_tag() }}
+
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        {% for error in form.errors.email %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        {% for error in form.errors.password %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="remember_me" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+        <br />
+        <h3>Don't have an account?</h3>
+        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('main.register') }}" role="button">Sign up now &raquo;</a>
+
+      </form>

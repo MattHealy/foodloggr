@@ -1,0 +1,36 @@
+      <form class="form-signin" method="post">
+
+       {{ form.hidden_tag() }}
+
+       <h2 class="form-signin-heading">Register</h2>
+
+        {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
+        {% for error in form.errors.email %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
+        {{ form.password(placeholder="Password", class="form-control", required="required") }}
+        {% for error in form.errors.password %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
+        {{ form.password2(placeholder="Confirm Password", class="form-control", required="required") }}
+        {% for error in form.errors.password2 %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
+        {{ form.first_name(placeholder="First Name", class="form-control", required="required") }}
+        {% for error in form.errors.first_name %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
+        {{ form.last_name(placeholder="Last Name", class="form-control", required="required") }}
+        {% for error in form.errors.last_name %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
+        <br />
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+
+      </form>
+

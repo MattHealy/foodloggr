@@ -1,0 +1,17 @@
+Link page
+
+<br>
+<a href="{{ url_for('main.home') }}">Home</a>
+<br>
+
+<form>
+
+       {{ form.hidden_tag() }}
+
+       {{ form.email(placeholder="Enter your friend's email address", class="form-control", required="required") }}
+       {{ form.submit(class="form-control") }}
+
+
+</form>
+
+</p>

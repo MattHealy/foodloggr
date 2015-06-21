@@ -1,0 +1,39 @@
+Home page
+
+<br>
+<a href="{{ url_for('main.link') }}">Link your friend</a>
+<br>
+
+<p>
+<a href="#">&lt;</a>
+<h2>Today</h2>
+<a href="#">&gt;</a>
+
+{% if entries %}
+{% if entries.count() > 0 %}
+
+<ul>
+
+{% for entry in entries %}
+
+  <li>{{ entry.body }}</li>
+
+{% endfor %}
+
+</ul>
+
+{% endif %}
+{% endif %}
+
+<p>
+<form method="post">
+
+       {{ form.hidden_tag() }}
+
+       {{ form.body(placeholder="Enter food", class="form-control", required="required") }}
+       {{ form.submit(class="form-control") }}
+
+
+</form>
+
+</p>
