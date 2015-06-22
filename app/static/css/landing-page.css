@@ -35,10 +35,10 @@ h6 {
     padding-bottom: 50px;
     text-align: center;
     /*color: #f8f8f8;*/
-    color: #777;
+    color: #000;
     /*background: url(../img/saladbowl.jpg) no-repeat center center;*/
-    background: url(../img/vegetables.jpg) no-repeat center center;
-    /*background: url(../img/strawberries.jpg) no-repeat center center;*/
+    /*background: url(../img/vegetables.jpg) no-repeat center center;*/
+    background: url(../img/strawberries.jpg) no-repeat center center;
     background-size: cover;
 }
 
