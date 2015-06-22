@@ -66,36 +66,38 @@
 
       <form class="form-signin" method="post">
 
-       {{ form.hidden_tag() }}
+        {% include "_flash.html" %}
+
+        {{ form.hidden_tag() }}
 
         <h2 class="form-signin-heading">Register</h2>
 
         <label for="inputFirstName" class="sr-only">First name</label>
-        <input type="text" id="inputFirstName" class="form-control" placeholder="First name" required autofocus>
+        {{ form.first_name(placeholder="First name", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.first_name %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
         <label for="inputLastName" class="sr-only">Last name</label>
-        <input type="text" id="inputLastName" class="form-control" placeholder="Last name" required autofocus>
+        {{ form.last_name(placeholder="Last name", class="form-control", required="required") }}
         {% for error in form.errors.last_name %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        {{ form.email(placeholder="Email address", class="form-control", required="required") }}
         {% for error in form.errors.email %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        {{ form.password(placeholder="Password", class="form-control", required="required") }}
         {% for error in form.errors.password %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
         <label for="inputPassword2" class="sr-only">Confirm Password</label>
-        <input type="password" id="inputPassword2" class="form-control" placeholder="Confirm password" required>
+        {{ form.password2(placeholder="Confirm password", class="form-control", required="required") }}
         {% for error in form.errors.password2 %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}

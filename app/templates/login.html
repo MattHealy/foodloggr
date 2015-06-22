@@ -64,16 +64,21 @@
 
     <div class="container">
 
+
       <form class="form-signin" method="post">
-       {{ form.hidden_tag() }}
+
+        {{ form.hidden_tag() }}
+
+        {% include "_flash.html" %}
+
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.email %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        {{ form.password(placeholder="Password", class="form-control", required="required") }}
         {% for error in form.errors.password %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
@@ -92,5 +97,12 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='assets/js/ie10-viewport-bug-workaround.js') }}"></script>
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
   </body>
 </html>

@@ -48,7 +48,7 @@ h6 {
   z-index: 2;
 }
 
-.form-signin input[type="email"] {
+.form-signin input[name="email"] {
   margin-top: 10px;
   margin-bottom: 10px;
   border-bottom-right-radius: 0;

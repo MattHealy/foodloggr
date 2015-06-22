@@ -27,7 +27,7 @@ def home():
         entry = Entry(body=form.body.data, timestamp=datetime.utcnow(), user_id=g.user.id)
         db.session.add(entry)
         db.session.commit()
-        flash('Entry added.')
+        #flash('Entry added.')
         return redirect(url_for('main.home'))
 
     entries = g.user.entries.order_by(Entry.timestamp.desc())
@@ -54,7 +54,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
-        flash('You have successfully registered.')
+        #flash('You have successfully registered.')
         return redirect(url_for('main.home'))
 
     return render_template('register.html', title='Register', form=form)
@@ -81,7 +81,7 @@ def login():
 
 @main.route('/logout')
 def logout():
-    flash('You have successfully logged out')
+    #flash('You have successfully logged out')
     logout_user()
     return redirect(url_for('main.index'))
 
