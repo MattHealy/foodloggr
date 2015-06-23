@@ -34,6 +34,13 @@ def home():
 
     return render_template("home.html", form=form, entries=entries)
 
+@main.route('/entry/<int:id>/remove', methods=['POST'])
+def remove_entry(id):
+    entry = Entry.query.filter(Entry.id == id, Entry.user_id == g.user.id).first_or_404()
+    db.session.delete(entry)
+    db.session.commit()
+    return redirect(url_for('main.home'))
+
 @main.route('/link', methods=['GET'])
 def link():
     form = LinkForm()
