@@ -1,0 +1,10 @@
+app.db
+app-dev.db
+app-test.db
+.env
+test.db
+*.log
+*.pot
+*.pyc
+app/*.pyc
+tmp/*
