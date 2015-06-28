@@ -1,5 +1,6 @@
 from app import db
 from flask import current_app
+from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
@@ -13,6 +14,7 @@ class User(db.Model):
     first_login = db.Column(db.DateTime)
     last_login = db.Column(db.DateTime)
     password_hash = db.Column(db.String(128))
+    confirmed = db.Column(db.Boolean)
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:
@@ -29,8 +31,15 @@ class User(db.Model):
     def is_anonymous(self):
         return True
 
+    def is_confirmed(self):
+        return self.confirmed
+
     def get_id(self):
         return unicode(self.id)
+
+    def generate_token(self):
+        s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'id': self.id})
 
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)

@@ -1,10 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request, g, current_app, session
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime, timedelta
+from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm
 from .. import db, lm
 from ..models import User, Entry
+from ..email import send_email
 
 @main.before_request
 def before_request():
@@ -19,7 +21,11 @@ def index():
     return render_template("index.html")
 
 @main.route('/home', methods=['GET','POST'])
+@login_required
 def home():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('main.unconfirmed'))
 
     form = EntryForm()
 
@@ -35,16 +41,78 @@ def home():
     return render_template("home.html", form=form, entries=entries)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
+@login_required
 def remove_entry(id):
     entry = Entry.query.filter(Entry.id == id, Entry.user_id == g.user.id).first_or_404()
     db.session.delete(entry)
     db.session.commit()
     return redirect(url_for('main.home'))
 
+@main.route('/unconfirmed', methods=['GET'])
+@login_required
+def unconfirmed():
+
+    if g.user.is_confirmed():
+        return redirect(url_for('main.home'))
+
+    return render_template("unconfirmed.html")
+
+@main.route('/confirm/<token>', methods=['GET'])
+@login_required
+def confirm(token):
+
+    if g.user.is_confirmed():
+        return redirect(url_for('main.home'))
+
+    s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+
+    data = None
+
+    try:
+        data = s.loads(token)
+    except:
+        abort(404)
+
+    if data.get('id'):
+        id = data.get('id')
+    else:
+        id = 0
+
+    user = User.query.get_or_404(id)
+
+    if user.id == g.user.id:
+        user.confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash('You have successfully confirmed your account!')
+    else:
+        flash('Invalid token')
+
+    return render_template("confirm.html")
+
 @main.route('/link', methods=['GET'])
+@login_required
 def link():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('main.unconfirmed'))
+
     form = LinkForm()
     return render_template("link.html", form=form)
+
+@main.route('/confirmation_email', methods=['GET'])
+@login_required
+def send_confirmation_email():
+
+    if g.user.is_confirmed():
+        return redirect(url_for('main.home'))
+
+    token = g.user.generate_token()
+
+    send_email(g.user.email, 'Confirm Account','mail/confirm_account', user=g.user, token=token)
+
+    flash("A confirmation email has been sent to " + g.user.email)
+    return redirect(url_for('main.unconfirmed'))
 
 @main.route('/register', methods=['GET','POST'])
 def register():
@@ -55,14 +123,16 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, first_login=datetime.utcnow(), password=form.password.data)
+        user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, first_login=datetime.utcnow(), password=form.password.data, is_confirmed=False)
         user.last_seen = datetime.utcnow()
         user.last_login = datetime.utcnow()
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
-        #flash('You have successfully registered.')
-        return redirect(url_for('main.home'))
+        token = user.generate_token()
+        send_email(form.email.data, 'Confirm Account','mail/confirm_account', user=user, token=token)
+        send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
+        return redirect(url_for('main.unconfirmed'))
 
     return render_template('register.html', title='Register', form=form)
 
@@ -87,6 +157,7 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 @main.route('/logout')
+@login_required
 def logout():
     #flash('You have successfully logged out')
     logout_user()

@@ -1,0 +1,10 @@
+Hello {{ user.first_name }},
+
+Thank you for registering. To begin using What Have You Eaten, you must first confirm your account.
+
+To confirm your account, simply copy and paste the below link in to your web browser:
+
+{{ url_for('main.confirm', token=token, _external=True) }}
+
+Regards,
+What Have You Eaten

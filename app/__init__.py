@@ -3,7 +3,7 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
-
+from flask.ext.mail import Mail
 
 from werkzeug.contrib.fixers import ProxyFix
 
@@ -15,6 +15,7 @@ db = SQLAlchemy()
 lm = LoginManager()
 lm.login_view = 'main.login'
 
+mail = Mail()
 
 def create_app(config_name):
 
@@ -25,6 +26,7 @@ def create_app(config_name):
     db.init_app(app)
     lm.init_app(app)
     toolbar.init_app(app)
+    mail.init_app(app)
 
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
