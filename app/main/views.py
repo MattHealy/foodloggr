@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, g, current_app, session
+from flask import render_template, flash, redirect, url_for, request, g, current_app, session, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime, timedelta
 from itsdangerous import JSONWebSignatureSerializer
@@ -38,7 +38,7 @@ def home():
 
     entries = g.user.entries.order_by(Entry.timestamp.desc())
 
-    return render_template("home.html", form=form, entries=entries)
+    return render_template("home.html", form=form, entries=entries, title='Dashboard')
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
@@ -55,7 +55,7 @@ def unconfirmed():
     if g.user.is_confirmed():
         return redirect(url_for('main.home'))
 
-    return render_template("unconfirmed.html")
+    return render_template("unconfirmed.html", title='Unconfirmed Account')
 
 @main.route('/confirm/<token>', methods=['GET'])
 @login_required
@@ -88,7 +88,7 @@ def confirm(token):
     else:
         flash('Invalid token')
 
-    return render_template("confirm.html")
+    return render_template("confirm.html", title='Confirm Account')
 
 @main.route('/link', methods=['GET'])
 @login_required
@@ -98,7 +98,7 @@ def link():
         return redirect(url_for('main.unconfirmed'))
 
     form = LinkForm()
-    return render_template("link.html", form=form)
+    return render_template("link.html", form=form, title='Friends')
 
 @main.route('/confirmation_email', methods=['GET'])
 @login_required
