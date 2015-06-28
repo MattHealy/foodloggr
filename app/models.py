@@ -3,6 +3,11 @@ from flask import current_app
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
+friendship = db.Table('friendship',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('friend_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     social_id = db.Column(db.String(64), unique=True)
@@ -15,6 +20,11 @@ class User(db.Model):
     last_login = db.Column(db.DateTime)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean)
+    friends = db.relationship('User', secondary=friendship,
+                                      primaryjoin=(friendship.c.user_id == id),
+                                      secondaryjoin=(friendship.c.friend_id == id),
+                                      backref=db.backref('friendship', lazy='dynamic'),
+                                      lazy='dynamic')
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:
@@ -41,6 +51,22 @@ class User(db.Model):
         s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         return s.dumps({'id': self.id})
 
+    def link(self, user):
+        if not self.is_linked(user):
+            self.friends.append(user)
+            return self
+
+    def unlink(self, user):
+        if self.is_linked(user):
+            self.friends.remove(user)
+            return self
+
+    def is_linked(self, user):
+        return self.friends.filter(friendship.c.friend_id == user.id).count() > 0
+
+    def friends_entries(self):
+        return Entry.query.join(friendship, (friendship.c.friend_id == Entry.user_id)).filter(friendship.c.user_id == self.id).order_by(Entry.timestamp.desc())
+
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)
 
@@ -63,3 +89,4 @@ class Entry(db.Model):
 
     def __repr__(self):
         return '<Entry %r>' % (self.body)
+

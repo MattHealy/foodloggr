@@ -98,6 +98,7 @@ def link():
         return redirect(url_for('main.unconfirmed'))
 
     form = LinkForm()
+
     return render_template("link.html", form=form, title='Friends')
 
 @main.route('/confirmation_email', methods=['GET'])

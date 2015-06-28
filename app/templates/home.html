@@ -43,6 +43,33 @@
                     </div>
                     <div class="col-lg-6">
                         <h1>Friend's Food Diaries</h1>
+
+                        {% if g.user.friends %}
+                            {% if g.user.friends.count() > 0 %}
+
+                                <div class="col-sm-8">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <tbody>
+
+                                        {% for entry in g.user.friends_entries() %}
+                                            <tr>
+                                               <td>{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
+                                               <td>{{ entry.body }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            {% else %}
+
+                                <p>You haven't linked up with any friends yet!</p>
+
+                            {% endif %}
+
+                        {% endif %}
+
                     </div>
                 </div>
                 <!-- /.row -->

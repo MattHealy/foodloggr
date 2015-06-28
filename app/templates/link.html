@@ -3,6 +3,27 @@
 {% block content %}
 
                 <div class="row">
+
+                    <div class="col-lg-6">
+                        <h1>Friends</h1>
+
+                        {% if g.user.friends %}
+                            {% if g.user.friends.count() > 0 %}
+
+                                {% for friend in g.user.friends %}
+                                    {{ friend.first_name }} {{ friend.last_name }}<br />
+                                {% endfor %}
+
+                            {% else %}
+
+                                <p>You haven't linked up with any friends yet!</p>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
+
                     <div class="col-lg-6">
 
                         <h1>Share your diary with a friend</h1>
@@ -20,9 +41,7 @@
                         </form>
 
                     </div>
-                    <div class="col-lg-6">
-                        <h1>Current Friends</h1>
-                    </div>
+
                 </div>
                 <!-- /.row -->
 
