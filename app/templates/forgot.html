@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-    <title>Log In - What Have You Eaten</title>
+    <title>Forgot your password - What Have You Eaten</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -71,27 +71,13 @@
 
         {% include "_flash.html" %}
 
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">Forgot your password?</h2>
         <label for="inputEmail" class="sr-only">Email address</label>
         {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.email %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
-        <label for="inputPassword" class="sr-only">Password</label>
-        {{ form.password(placeholder="Password", class="form-control", required="required") }}
-        {% for error in form.errors.password %}
-           <span style="color: red;">[{{error}}]</span>
-        {% endfor %}
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <a href="{{ url_for('main.forgot') }}">Forgot your password?</a>
-        <br />
-        <h3>Don't have an account?</h3>
-        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('main.register') }}" role="button">Sign up now &raquo;</a>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Reset my password</button>
       </form>
 
     </div> <!-- /container -->

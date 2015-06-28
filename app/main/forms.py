@@ -1,6 +1,6 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, PasswordField, SubmitField
+from wtforms import TextField, BooleanField, PasswordField, SubmitField, HiddenField
 from wtforms.validators import Required, Email
 from ..models import User
 
@@ -44,3 +44,26 @@ class EntryForm(Form):
 class LinkForm(Form):
     email = TextField('email', validators=[Required(), Email()])
     submit = SubmitField('Send Invitation')
+
+class ForgotForm(Form):
+    email = TextField('email', validators=[Required(), Email()])
+    submit = SubmitField('Reset password')
+
+class ResetForm(Form):
+    token = HiddenField('token')
+    password = PasswordField('password', validators=[Required()])
+    password2 = PasswordField('password2', validators=[Required()])
+    submit = SubmitField('Reset password')
+
+    def validate(self):
+
+        rv = Form.validate(self)
+
+        if not rv:
+            return False
+
+        if self.password.data != self.password2.data:
+            self.password.errors.append('Your passwords do not match.')
+            return False
+
+        return True

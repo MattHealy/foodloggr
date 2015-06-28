@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-    <title>Log In - What Have You Eaten</title>
+    <title>Reset Password - What Have You Eaten</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -64,46 +64,39 @@
 
     <div class="container">
 
-
-      <form class="form-signin" method="post">
-
-        {{ form.hidden_tag() }}
+      <form class="form-signin" method="post" action="{{ url_for('main.reset_password', token=token) }}">
 
         {% include "_flash.html" %}
 
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
-        {% for error in form.errors.email %}
-           <span style="color: red;">[{{error}}]</span>
-        {% endfor %}
-        <label for="inputPassword" class="sr-only">Password</label>
-        {{ form.password(placeholder="Password", class="form-control", required="required") }}
+        {{ form.hidden_tag() }}
+
+        <h2 class="form-signin-heading">Reset your password</h2>
+
+        <!--
+        <label>Email Address</label>
+        <p class="form-control-static">{{ user.email }}</p>
+        -->
+
+        <label for="inputPassword" class="sr-only">New Password</label>
+        {{ form.password(placeholder="New password", class="form-control", required="required") }}
         {% for error in form.errors.password %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <a href="{{ url_for('main.forgot') }}">Forgot your password?</a>
+
+        <label for="inputPassword2" class="sr-only">Confirm Password</label>
+        {{ form.password2(placeholder="Confirm password", class="form-control", required="required") }}
+        {% for error in form.errors.password2 %}
+           <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+
         <br />
-        <h3>Don't have an account?</h3>
-        <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('main.register') }}" role="button">Sign up now &raquo;</a>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Reset Password</button>
+
       </form>
 
     </div> <!-- /container -->
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='assets/js/ie10-viewport-bug-workaround.js') }}"></script>
-
-    <!-- jQuery -->
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
   </body>
 </html>

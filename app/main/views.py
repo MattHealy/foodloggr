@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
-from .forms import LoginForm, RegisterForm, EntryForm, LinkForm
+from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm
 from .. import db, lm
 from ..models import User, Entry
 from ..email import send_email
@@ -162,6 +162,59 @@ def logout():
     #flash('You have successfully logged out')
     logout_user()
     return redirect(url_for('main.index'))
+
+@main.route('/forgot', methods=['GET','POST'])
+def forgot():
+
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('main.home'))
+
+    form = ForgotForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter(User.email==form.email.data).filter(User.password_hash!=None).first()
+        if user is None:
+            flash('Sorry, we could not find a user with that email address.')
+        else:
+            token = user.generate_token()
+            send_email(user.email, 'Password Reset','mail/password_reset', user=user, token=token)
+            flash('An email containing password reset instructions has been sent to ' + user.email + '.')
+            return redirect(url_for('main.forgot'))
+
+    return render_template('forgot.html', title='Forgot Your Password', form=form)
+
+@main.route('/reset/<token>', methods=['GET','POST'])
+def reset_password(token):
+
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('main.home'))
+
+    s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+
+    data = None
+
+    try:
+        data = s.loads(token)
+    except:
+        abort(404)
+
+    if data.get('id'):
+        id = data.get('id')
+    else:
+        id = 0
+
+    user = User.query.get_or_404(id)
+
+    form = ResetForm()
+
+    if form.validate_on_submit():
+        user.password = form.password.data
+        db.session.add(user)
+        db.session.commit()
+        flash('Your password has now been reset.')
+        return redirect(url_for('main.login'))
+
+    return render_template('reset.html', title='Reset Password', form=form, user=user, token=token)
 
 @lm.user_loader
 def load_user(id):
