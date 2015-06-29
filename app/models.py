@@ -51,6 +51,10 @@ class User(db.Model):
         s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         return s.dumps({'id': self.id})
 
+    def generate_friend_token(self, friend):
+        s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'id': self.id, 'friend_id': friend.id})
+
     def link(self, user):
         if not self.is_linked(user):
             self.friends.append(user)

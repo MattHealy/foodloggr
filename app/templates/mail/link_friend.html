@@ -1,0 +1,10 @@
+Hello {{ friend.first_name }},<br /><br />
+
+{{ user.first_name }} {{ user.last_name }} wants to share their food diary with you!<br /><br />
+
+To accept this invitation, simply <a href="{{ url_for('main.accept_link', token=token, _external=True) }}">click here</a> or copy and paste the below link in to your web browser:<br /><br />
+
+{{ url_for('main.accept_link', token=token, _external=True) }}<br /><br />
+
+Regards,<br />
+What Have You Eaten

@@ -90,7 +90,43 @@ def confirm(token):
 
     return render_template("confirm.html", title='Confirm Account')
 
-@main.route('/link', methods=['GET'])
+@main.route('/accept/<token>', methods=['GET'])
+@login_required
+def accept_link(token):
+
+    s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+
+    data = None
+
+    try:
+        data = s.loads(token)
+    except:
+        abort(404)
+
+    if data.get('id'):
+        id = data.get('id')
+    else:
+        id = 0
+
+    if data.get('friend_id'):
+        friend_id = data.get('friend_id')
+    else:
+        friend_id = 0
+
+    user = User.query.get_or_404(friend_id)
+    friend = User.query.get_or_404(id)
+
+    if user.id == g.user.id:
+        g.user.link(friend)
+        db.session.add(user)
+        db.session.commit()
+        flash('You are now following ' + friend.first_name + '\'s food diary.')
+    else:
+        flash('Invalid token')
+
+    return redirect(url_for('main.home'))
+
+@main.route('/link', methods=['GET','POST'])
 @login_required
 def link():
 
@@ -98,6 +134,17 @@ def link():
         return redirect(url_for('main.unconfirmed'))
 
     form = LinkForm()
+
+    if form.validate_on_submit():
+        friend = User.query.filter_by(email = form.email.data).first()
+        if friend:
+            token = g.user.generate_friend_token(friend)
+            send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
+            flash('An invite has been sent to ' + form.email.data)
+        else:
+            send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/invite_friend', user=g.user)
+            flash('An invite has been sent to ' + form.email.data)
+        return redirect(url_for('main.link'))
 
     return render_template("link.html", form=form, title='Friends')
 

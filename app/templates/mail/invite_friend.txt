@@ -1,0 +1,10 @@
+Hello,
+
+Your friend {{ user.first_name }} {{ user.last_name }} wants to share their food diary with you! 
+
+To get started with What Have You Eaten, copy and paste the below link to your web browser:
+
+{{ url_for('main.register', _external=True) }}
+
+Regards,
+What Have You Eaten
