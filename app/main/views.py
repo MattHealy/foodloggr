@@ -138,9 +138,12 @@ def link():
     if form.validate_on_submit():
         friend = User.query.filter_by(email = form.email.data).first()
         if friend:
-            token = g.user.generate_friend_token(friend)
-            send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
-            flash('An invite has been sent to ' + form.email.data)
+            if friend.id == g.user.id:
+                flash('You cannot enter your own email address here.')
+            else:
+                token = g.user.generate_friend_token(friend)
+                send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
+                flash('An invite has been sent to ' + form.email.data)
         else:
             send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/invite_friend', user=g.user)
             flash('An invite has been sent to ' + form.email.data)
