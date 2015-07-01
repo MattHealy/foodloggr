@@ -48,6 +48,30 @@ def remove_entry(id):
     db.session.commit()
     return redirect(url_for('main.home'))
 
+@main.route('/friend/<int:id>/remove', methods=['POST'])
+@login_required
+def unlink(id):
+
+    friend = User.query.get(id)
+
+    if friend is None:
+        flash('User not found') 
+    if friend == g.user:
+        flash('You cannot unlink yourself.') 
+        return redirect(url_for('main.link'))
+
+    user = g.user.unlink(friend)
+
+    if user is None:
+        flash('Cannot unlink ' + friend.first_name)
+        return redirect('main.link')
+
+    db.session.add(user)
+    db.session.commit()
+
+    flash('Successfully unlinked ' + friend.first_name + ' ' + friend.last_name)
+    return redirect(url_for('main.link'))
+
 @main.route('/unconfirmed', methods=['GET'])
 @login_required
 def unconfirmed():

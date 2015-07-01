@@ -10,9 +10,27 @@
                         {% if g.user.friends %}
                             {% if g.user.friends.count() > 0 %}
 
-                                {% for friend in g.user.friends %}
-                                    {{ friend.first_name }} {{ friend.last_name }}<br />
-                                {% endfor %}
+                                <div class="col-sm-8">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <tbody>
+
+                                        {% for friend in g.user.friends %}
+                                            <tr>
+                                               <td>{{ friend.first_name }} {{ friend.last_name }}</td>
+                                               <td width="20%">
+                                                   <form method="post" action="{{ url_for('main.unlink', id=friend.id) }}">
+                                                       <button type="submit" class="btn btn-danger delete-button" style="display: inline-block">
+                                                           <i class="fa fa-fw fa-user-times fa-1"></i>
+                                                       </button>
+                                                   </form>
+                                               </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
 
                             {% else %}
 
