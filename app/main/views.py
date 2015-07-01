@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, g, current_app, session, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm
@@ -33,12 +33,26 @@ def home():
         entry = Entry(body=form.body.data, timestamp=datetime.utcnow(), user_id=g.user.id)
         db.session.add(entry)
         db.session.commit()
-        #flash('Entry added.')
         return redirect(url_for('main.home'))
 
-    entries = g.user.entries.order_by(Entry.timestamp.desc())
+    diary_date = request.args.get('date')
 
-    return render_template("home.html", form=form, entries=entries, title='Dashboard')
+    if diary_date:
+        try:
+            today = datetime.strptime(diary_date, "%Y-%m-%d").date()
+            datestring = today.strftime("%d %b")
+        except:
+            today = date.today()
+            datestring = 'Today'
+    else:
+        today = date.today()
+        datestring = 'Today'
+
+    tomorrow = today + timedelta(days=1)
+
+    entries = g.user.entries.filter(Entry.timestamp>=today).filter(Entry.timestamp<tomorrow).order_by(Entry.timestamp.desc())
+
+    return render_template("home.html", form=form, entries=entries, title='Dashboard', datestring = datestring)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required

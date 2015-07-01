@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-lg-6">
 
-                        <h1>Your Food Diary for <strong>Today</strong></h1>
+                        <h1>Your Food Diary for <strong>{{ datestring }}</strong></h1>
 
                         {% if entries %}
                             {% if entries.count() > 0 %}
