@@ -7,6 +7,12 @@
 
                         <h1>Your Food Diary for <strong>{{ datestring }}</strong></h1>
 
+                        <form method="get" class="datepickerform">
+                            <p>
+                                <input type="text" id="datepicker-input" class="datepicker form-control" value="{{ placeholder }}" name="date" style="width: 200px; display: inline; margin-right: 5px;" /><i id="datepicker-icon" class="fa fa-calendar fa-2x"></i></a>
+                            </p>
+                        </form>
+
                         {% if entries %}
                             {% if entries.count() > 0 %}
                                 <div class="col-sm-8">

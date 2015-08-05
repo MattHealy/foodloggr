@@ -36,23 +36,27 @@ def home():
         return redirect(url_for('main.home'))
 
     diary_date = request.args.get('date')
+    placeholder = None
 
     if diary_date:
         try:
-            today = datetime.strptime(diary_date, "%Y-%m-%d").date()
+            today = datetime.strptime(diary_date, "%d-%m-%Y").date()
             datestring = today.strftime("%d %b")
+            placeholder = today.strftime("%d-%m-%Y")
         except:
             today = date.today()
             datestring = 'Today'
+            placeholder = today.strftime("%d-%m-%Y")
     else:
         today = date.today()
         datestring = 'Today'
+        placeholder = today.strftime("%d-%m-%Y")
 
     tomorrow = today + timedelta(days=1)
 
     entries = g.user.entries.filter(Entry.timestamp>=today).filter(Entry.timestamp<tomorrow).order_by(Entry.timestamp.desc())
 
-    return render_template("home.html", form=form, entries=entries, title='Dashboard', datestring = datestring)
+    return render_template("home.html", form=form, entries=entries, title='Dashboard', datestring = datestring, placeholder = placeholder)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
