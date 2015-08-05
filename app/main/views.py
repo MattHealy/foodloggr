@@ -51,7 +51,10 @@ def home():
     if diary_date:
         try:
             today = datetime.strptime(diary_date, "%d-%m-%Y").date()
-            datestring = today.strftime("%d %b")
+            realtoday = date.today()
+            datestring = today.strftime("%e %b")
+            if today == realtoday:
+                datestring = 'Today'
             placeholder = today.strftime("%d-%m-%Y")
         except:
             today = date.today()

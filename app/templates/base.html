@@ -18,7 +18,7 @@
     <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
     <!-- Custom Fonts -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-datepicker/css/bootstrap-datepicker3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui/jquery-ui.css') }}">
 
     {% endblock %}
 
@@ -224,28 +224,27 @@
     {% block scripts %}
     {{ super() }}
 
-    <script src="{{ url_for('static', filename='bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-ui/jquery-ui.js') }}"></script>
 
     <script>
 
          $(document).ready(function() {
+
+             $("#datepicker-input").datepicker({
+                 dateFormat: "dd-mm-yy",
+                 onSelect: function() {
+                                $("#datepicker-form").submit();
+                           }
+             });
+
              $("button.delete-button").click(function() {
                  return confirm('Are you sure?');
              });
+
              $("#datepicker-icon").click(function() {
                  $('#datepicker-input').focus();
              });
-         });
 
-         $('.datepicker').datepicker({
-             format: "dd-mm-yyyy",
-             autoclose: true,
-             orientation: "bottom left",
-             todayHighlight: true
-         });
-
-         $('.datepicker').datepicker().on('changeDate', function(e){
-             $('.datepickerform').submit();
          });
 
     </script>
