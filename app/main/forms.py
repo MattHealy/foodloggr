@@ -39,6 +39,7 @@ class RegisterForm(Form):
 
 class EntryForm(Form):
     body = TextField('body', validators=[Required()])
+    entry_date = HiddenField('body')
     submit = SubmitField('Add')
 
 class LinkForm(Form):

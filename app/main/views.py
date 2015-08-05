@@ -30,10 +30,20 @@ def home():
     form = EntryForm()
 
     if form.validate_on_submit():
-        entry = Entry(body=form.body.data, timestamp=datetime.utcnow(), user_id=g.user.id)
+
+        entry_date = None
+
+        if form.entry_date.data:
+            entry_date = datetime.strptime(form.entry_date.data, "%d-%m-%Y").date()
+        else:
+            entry_date = date.today()
+
+        entry = Entry(body=form.body.data, entry_date=entry_date, timestamp=datetime.utcnow(), user_id=g.user.id)
+
         db.session.add(entry)
         db.session.commit()
-        return redirect(url_for('main.home'))
+
+        return redirect(url_for('main.home', date = form.entry_date.data))
 
     diary_date = request.args.get('date')
     placeholder = None
@@ -54,9 +64,13 @@ def home():
 
     tomorrow = today + timedelta(days=1)
 
-    entries = g.user.entries.filter(Entry.timestamp>=today).filter(Entry.timestamp<tomorrow).order_by(Entry.timestamp.desc())
+    entries = g.user.entries.filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow).order_by(Entry.timestamp.desc())
 
-    return render_template("home.html", form=form, entries=entries, title='Dashboard', datestring = datestring, placeholder = placeholder)
+    form.entry_date.data = placeholder
+
+    return render_template("home.html", form=form, entries=entries, \
+                            title='Dashboard', datestring = datestring, \
+                            placeholder = placeholder)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required

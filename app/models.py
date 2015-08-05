@@ -69,7 +69,7 @@ class User(db.Model):
         return self.friends.filter(friendship.c.friend_id == user.id).count() > 0
 
     def friends_entries(self):
-        return Entry.query.join(friendship, (friendship.c.friend_id == Entry.user_id)).filter(friendship.c.user_id == self.id).order_by(Entry.timestamp.desc())
+        return Entry.query.join(friendship, (friendship.c.friend_id == Entry.user_id)).filter(friendship.c.user_id == self.id).order_by(Entry.entry_date.desc())
 
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)
@@ -88,6 +88,7 @@ class User(db.Model):
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(64))
+    entry_date = db.Column(db.DateTime)
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
