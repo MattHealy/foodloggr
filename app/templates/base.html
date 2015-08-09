@@ -158,7 +158,7 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li{% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %} class="active"{% endif %}>
-                        <a href="{{ url_for('main.home') }}"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="{{ url_for('main.home') }}"><i class="fa fa-fw fa-dashboard"></i> News Feed</a>
                     </li>
                     <li{% if request.path=='/link' %} class="active"{% endif %}>
                         <a href="{{ url_for('main.link') }}"><i class="fa fa-fw fa-user"></i> Friends</a>
@@ -181,11 +181,11 @@
                         <ol class="breadcrumb">
                             {% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %}
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Dashboard
+                                <i class="fa fa-dashboard"></i> News Feed
                             </li>
                             {% elif request.path=='/link' %}
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="{{ url_for('main.home') }}">Dashboard</a>
+                                <i class="fa fa-dashboard"></i>  <a href="{{ url_for('main.home') }}">News Feed</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-user"></i> Friends

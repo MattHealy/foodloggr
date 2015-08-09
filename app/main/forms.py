@@ -39,8 +39,11 @@ class RegisterForm(Form):
 
 class EntryForm(Form):
     body = TextField('body', validators=[Required()])
-    entry_date = HiddenField('body')
+    entry_date = HiddenField('entry_date')
     submit = SubmitField('Add')
+
+class RemoveEntryForm(Form):
+    entry_date = HiddenField('entry_date')
 
 class LinkForm(Form):
     email = TextField('email', validators=[Required(), Email()])

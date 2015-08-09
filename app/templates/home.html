@@ -3,36 +3,15 @@
 {% block content %}
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
 
-                        <h1>Your Food Diary for <strong>{{ datestring }}</strong></h1>
+                        <h1>Food Diary for <strong>{{ datestring }}</strong></h1>
 
                         <form method="get" id="datepicker-form">
                             <p>
                                 <input type="text" id="datepicker-input" class="datepicker form-control" value="{{ placeholder }}" name="date" style="width: 200px; display: inline; margin-right: 5px;" /><i id="datepicker-icon" class="fa fa-calendar fa-2x"></i></a>
                             </p>
                         </form>
-
-                        {% if entries %}
-                            {% if entries.count() > 0 %}
-                                <div class="col-sm-8">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <tbody>
-                                    {% for entry in entries %}
-                                        <tr>
-                                           <td valign="middle">{{ entry.body }}</td>
-                                           <td width="20%">
-                                               <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
-                                                   <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash fa-1"></i></button>
-                                               </form>
-                                           </td>
-                                        </tr>
-                                    {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% endif %}
-                        {% endif %}
 
                         <form role="form" method="post">
 
@@ -46,38 +25,34 @@
 
                         </form>
 
-                    </div>
-                    <div class="col-lg-6">
-                        <h1>Friend's Food Diaries</h1>
-
-                        {% if g.user.friends %}
-                            {% if g.user.friends.count() > 0 %}
-                                {% if friends_entries.count() > 0 %}
-
+                        {% if entries %}
+                            {% if entries.count() > 0 %}
                                 <div class="col-sm-8">
                                     <table class="table table-bordered table-hover table-striped">
                                         <tbody>
-
-                                        {% for entry in friends_entries %}
-                                            <tr>
-                                               <td>{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
-                                               <td>{{ entry.body }}</td>
-                                            </tr>
-                                        {% endfor %}
-
+                                    {% for entry in entries %}
+                                        <tr>
+                                           {% if entry.user == g.user %}
+                                           <td valign="middle"><strong>Me</strong></td>
+                                           <td valign="middle"><strong>{{ entry.body }}</strong></td>
+                                           <td width="10%">
+                                               <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
+                                                   {{ removeform.hidden_tag() }}
+                                                   <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash fa-1"></i></button>
+                                               </form>
+                                           </td>
+                                           {% else %}
+                                           <td valign="middle">{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
+                                           <td valign="middle">{{ entry.body }}</td>
+                                           <td width="10%">
+                                           </td>
+                                           {% endif %}
+                                        </tr>
+                                    {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
-                                {% else %}
-                                <p>Your friends haven't entered anything today!</p>
-                                {% endif %}
-
-                            {% else %}
-
-                                <p>You haven't added any friends yet!</p>
-
                             {% endif %}
-
                         {% endif %}
 
                     </div>

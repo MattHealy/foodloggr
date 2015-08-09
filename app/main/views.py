@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
-from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm
+from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm
 from .. import db, lm
 from ..models import User, Entry, Friendship
 from ..email import send_email
@@ -28,6 +28,7 @@ def home():
         return redirect(url_for('main.unconfirmed'))
 
     form = EntryForm()
+    removeform = RemoveEntryForm()
 
     if form.validate_on_submit():
 
@@ -67,23 +68,34 @@ def home():
 
     tomorrow = today + timedelta(days=1)
 
-    entries = g.user.entries.filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow).order_by(Entry.timestamp.desc())
-
+    my_entries = g.user.entries.filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow)
     friends_entries = g.user.friends_entries(today,tomorrow)
 
-    form.entry_date.data = placeholder
+    entries = my_entries.union(friends_entries).order_by(Entry.timestamp.desc())
 
-    return render_template("home.html", form=form, entries=entries, friends_entries=friends_entries, \
-                            title='Dashboard', datestring = datestring, \
+    form.entry_date.data = placeholder
+    removeform.entry_date.data = placeholder
+
+    return render_template("home.html", form=form, removeform=removeform, entries=entries, \
+                            title='News Feed', datestring = datestring, \
                             placeholder = placeholder)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
 def remove_entry(id):
-    entry = Entry.query.filter(Entry.id == id, Entry.user_id == g.user.id).first_or_404()
-    db.session.delete(entry)
-    db.session.commit()
-    return redirect(url_for('main.home'))
+
+    form = RemoveEntryForm()
+
+    if form.validate_on_submit():
+
+        entry = Entry.query.filter(Entry.id == id, Entry.user_id == g.user.id).first_or_404()
+        db.session.delete(entry)
+        db.session.commit()
+
+        return redirect(url_for('main.home', date = form.entry_date.data))
+
+    else:
+        return redirect(url_for('main.home'))
 
 @main.route('/friend/<int:id>/remove', methods=['POST'])
 @login_required
