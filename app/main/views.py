@@ -106,7 +106,7 @@ def unlink(id):
     db.session.add(user)
     db.session.commit()
 
-    flash('Successfully unlinked ' + friend.first_name + ' ' + friend.last_name)
+    flash('Successfully unfriended ' + friend.first_name + ' ' + friend.last_name)
     return redirect(url_for('main.link'))
 
 @main.route('/unconfirmed', methods=['GET'])
@@ -201,10 +201,14 @@ def link():
         if friend:
             if friend.id == g.user.id:
                 flash('You cannot enter your own email address here.')
+            elif g.user.is_linked(friend):
+                flash('You are already friends with ' + friend.first_name + '.')
             else:
-                friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
-                db.session.add(friendship)
-                db.session.commit()
+                friendship = Friendship.query.filter_by(user_id = g.user.id, friend_id = friend.id).first()
+                if not friendship:
+                    friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
+                    db.session.add(friendship)
+                    db.session.commit()
                 token = g.user.generate_friend_token(friend)
                 send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
                 flash('A friend request has been sent to ' + form.email.data)
