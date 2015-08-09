@@ -52,12 +52,13 @@
 
                         {% if g.user.friends %}
                             {% if g.user.friends.count() > 0 %}
+                                {% if friends_entries.count() > 0 %}
 
                                 <div class="col-sm-8">
                                     <table class="table table-bordered table-hover table-striped">
                                         <tbody>
 
-                                        {% for entry in g.user.friends_entries() %}
+                                        {% for entry in friends_entries %}
                                             <tr>
                                                <td>{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
                                                <td>{{ entry.body }}</td>
@@ -67,10 +68,13 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                {% else %}
+                                <p>Your friends haven't entered anything today!</p>
+                                {% endif %}
 
                             {% else %}
 
-                                <p>You haven't linked up with any friends yet!</p>
+                                <p>You haven't added any friends yet!</p>
 
                             {% endif %}
 

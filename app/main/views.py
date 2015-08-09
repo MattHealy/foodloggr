@@ -5,7 +5,7 @@ from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm
 from .. import db, lm
-from ..models import User, Entry
+from ..models import User, Entry, Friendship
 from ..email import send_email
 
 @main.before_request
@@ -69,9 +69,11 @@ def home():
 
     entries = g.user.entries.filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow).order_by(Entry.timestamp.desc())
 
+    friends_entries = g.user.friends_entries(today,tomorrow)
+
     form.entry_date.data = placeholder
 
-    return render_template("home.html", form=form, entries=entries, \
+    return render_template("home.html", form=form, entries=entries, friends_entries=friends_entries, \
                             title='Dashboard', datestring = datestring, \
                             placeholder = placeholder)
 
@@ -179,7 +181,7 @@ def accept_link(token):
         g.user.link(friend)
         db.session.add(user)
         db.session.commit()
-        flash('You are now following ' + friend.first_name + '\'s food diary.')
+        flash('You are now friends with ' + friend.first_name)
     else:
         flash('Invalid token')
 
@@ -200,12 +202,25 @@ def link():
             if friend.id == g.user.id:
                 flash('You cannot enter your own email address here.')
             else:
+                friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
+                db.session.add(friendship)
+                db.session.commit()
                 token = g.user.generate_friend_token(friend)
                 send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
-                flash('An invite has been sent to ' + form.email.data)
+                flash('A friend request has been sent to ' + form.email.data)
         else:
+
+            # Add a "Ghost" account for this user
+            friend = User(email=form.email.data, is_confirmed=False)
+            db.session.add(friend)
+            db.session.commit()
+
+            # Create the friend request - an unconfirmed friendship
+            friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
+            db.session.add(friendship)
+            db.session.commit()
             send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/invite_friend', user=g.user)
-            flash('An invite has been sent to ' + form.email.data)
+            flash('A friend request has been sent to ' + form.email.data)
         return redirect(url_for('main.link'))
 
     return render_template("link.html", form=form, title='Friends')
@@ -233,7 +248,18 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, first_login=datetime.utcnow(), password=form.password.data, is_confirmed=False)
+
+        user = User.query.filter(User.email == form.email.data).filter(User.password_hash == None).first()
+
+        if user:
+            user.first_name = form.first_name.data
+            user.last_name = form.last_name.data
+            user.first_login = datetime.utcnow()
+            user.password = form.password.data
+            user.is_confirmed = False
+        else:
+            user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, first_login=datetime.utcnow(), password=form.password.data, is_confirmed=False)
+
         user.last_seen = datetime.utcnow()
         user.last_login = datetime.utcnow()
         db.session.add(user)

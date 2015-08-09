@@ -3,10 +3,13 @@ from flask import current_app
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
-friendship = db.Table('friendship',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('friend_id', db.Integer, db.ForeignKey('user.id'))
-)
+class Friendship(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    confirmed = db.Column(db.Boolean)
+    user = db.relationship('User', primaryjoin="Friendship.user_id == User.id")
+    friend = db.relationship('User', primaryjoin="Friendship.friend_id == User.id")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,17 +17,25 @@ class User(db.Model):
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
     email = db.Column(db.String(64), index = True)
-    entries = db.relationship('Entry', backref='user', lazy='dynamic')
     last_seen = db.Column(db.DateTime)
     first_login = db.Column(db.DateTime)
     last_login = db.Column(db.DateTime)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean)
-    friends = db.relationship('User', secondary=friendship,
-                                      primaryjoin=(friendship.c.user_id == id),
-                                      secondaryjoin=(friendship.c.friend_id == id),
-                                      backref=db.backref('friendship', lazy='dynamic'),
-                                      lazy='dynamic')
+
+    entries = db.relationship('Entry', backref='user', lazy='dynamic')
+
+    friends = db.relationship('Friendship',
+                              primaryjoin="and_(Friendship.user_id == User.id, Friendship.confirmed == True)",
+                              lazy='dynamic', 
+                              foreign_keys='Friendship.user_id',
+              )
+
+    friend_requests = db.relationship('Friendship',
+                              primaryjoin="and_(Friendship.friend_id == User.id, Friendship.confirmed == False)",
+                              lazy='dynamic', 
+                              foreign_keys='Friendship.friend_id',
+              )
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:
@@ -55,21 +66,43 @@ class User(db.Model):
         s = JSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         return s.dumps({'id': self.id, 'friend_id': friend.id})
 
-    def link(self, user):
-        if not self.is_linked(user):
-            self.friends.append(user)
+    def link(self, friend):
+        if not self.is_linked(friend):
+
+            friendship = Friendship.query.filter_by(user_id = self.id, friend_id = friend.id).first()
+            if friendship:
+                friendship.confirmed = True
+            else:
+                friendship =  Friendship(user_id = self.id, friend_id = friend.id, confirmed = True)
+
+            db.session.add(friendship)
+            db.session.commit()
+
+            if not friend.is_linked(self):
+                friend.link(self)
+
             return self
 
-    def unlink(self, user):
-        if self.is_linked(user):
-            self.friends.remove(user)
+    def unlink(self, friend):
+        if self.is_linked(friend):
+
+            friendship = Friendship.query.filter_by(user_id = self.id, friend_id = friend.id)
+            db.session.delete(friendship)
+            db.session.commit()
+
+            if friend.is_linked(self):
+                friend.unlink(self)
+
             return self
 
-    def is_linked(self, user):
-        return self.friends.filter(friendship.c.friend_id == user.id).count() > 0
+    def is_linked(self, friend):
+        return Friendship.query.filter_by(user_id = self.id, friend_id = friend.id, confirmed = True).count() > 0
 
-    def friends_entries(self):
-        return Entry.query.join(friendship, (friendship.c.friend_id == Entry.user_id)).filter(friendship.c.user_id == self.id).order_by(Entry.entry_date.desc())
+    def friends_entries(self, today, tomorrow):
+        return Entry.query.join(Friendship, (Friendship.friend_id == Entry.user_id)). \
+                 filter(Friendship.user_id == self.id). \
+                 filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow). \
+                 order_by(Entry.timestamp.desc())
 
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)

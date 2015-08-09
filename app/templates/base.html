@@ -120,28 +120,19 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">View All</a>
-                        </li>
+                            {% if g.user.friend_requests > 0 %}
+                                {% if g.user.friend_requests.count() > 0 %}
+                                    {% for friend_request in g.user.friend_requests %}
+                                        <li>
+                                            <a href="{{ url_for('main.accept_link', token=friend_request.user.generate_friend_token(g.user)) }}">{{ friend_request.user.first_name }} {{ friend_request.user.last_name }} <span class="label label-primary">Accept friend request</span></a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                        <li>
+                                            No alerts
+                                        </li>
+                                {% endif %}
+                            {% endif %}
                     </ul>
                 </li>
                 <li class="dropdown">

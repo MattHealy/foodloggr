@@ -29,7 +29,7 @@ class RegisterForm(Form):
             self.password.errors.append('Your passwords do not match.')
             return False
 
-        existing_user = User.query.filter_by(email=self.email.data).first()
+        existing_user = User.query.filter(User.email == self.email.data).filter(User.password_hash != None).first()
 
         if existing_user is not None:
             self.email.errors.append('This email address is already used - please choose another.')
