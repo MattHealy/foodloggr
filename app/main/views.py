@@ -7,6 +7,7 @@ from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, Forg
 from .. import db, lm
 from ..models import User, Entry, Friendship
 from ..email import send_email
+from .tools import s3_upload
 
 @main.before_request
 def before_request():
@@ -394,6 +395,10 @@ def edit_profile():
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.email = form.email.data
+
+        if form.photo.data.filename:
+            output = s3_upload(form.photo)
+            user.photo = output
 
         db.session.add(user)
         db.session.commit()

@@ -17,6 +17,11 @@ class Config:
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
 
+    S3_KEY = os.environ.get('S3_KEY')
+    S3_SECRET = os.environ.get('S3_SECRET')
+    S3_BUCKET = 'foodlog-userphotos'
+    S3_UPLOAD_DIRECTORY = '/'
+
     @staticmethod
     def init_app(app):
         pass

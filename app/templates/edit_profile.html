@@ -4,7 +4,7 @@
 
                 <div class="row">
 
-                    <form role="form" method="post">
+                    <form role="form" method="post" enctype="multipart/form-data">
 
                         <div class="col-lg-4">
 
@@ -25,6 +25,17 @@
                             <label for="email">Email address</label>
                             {{ form.email(placeholder="e.g. test@gmail.com", class="form-control", required="required") }}
                             {% for error in form.errors.email %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+
+                            <label for="photo">Photo</label>
+                            {% if g.user.photo %}
+                            <p class="form-control-static">Current photo:
+                               <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="100" />
+                            </p>
+                            {% endif %}
+                            {{ form.photo(placeholder="Upload your photo", class="form-control") }}
+                            {% for error in form.errors.photo %}
                                 <span style="color: red;">[{{error}}]</span>
                             {% endfor %}
 

@@ -2,6 +2,7 @@ from flask import g, current_app
 from flask.ext.wtf import Form
 from wtforms import TextField, BooleanField, PasswordField, SubmitField, HiddenField
 from wtforms.validators import Required, Email
+from flask_wtf.file import FileField, FileAllowed
 from ..models import User
 
 class LoginForm(Form):
@@ -76,3 +77,4 @@ class ProfileForm(Form):
     first_name = TextField('first_name', validators=[Required()])
     last_name = TextField('last_name', validators=[Required()])
     email = TextField('email', validators=[Required(), Email()])
+    photo = FileField('Your photo', validators=[FileAllowed(['jpg','jpeg','png','gif'], 'Images only!')])

@@ -23,6 +23,7 @@ class User(db.Model):
     last_login = db.Column(db.DateTime)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean)
+    photo = db.Column(db.String(128))
 
     entries = db.relationship('Entry', backref='user', lazy='dynamic')
 
