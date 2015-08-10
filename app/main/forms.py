@@ -71,3 +71,8 @@ class ResetForm(Form):
             return False
 
         return True
+
+class ProfileForm(Form):
+    first_name = TextField('first_name', validators=[Required()])
+    last_name = TextField('last_name', validators=[Required()])
+    email = TextField('email', validators=[Required(), Email()])

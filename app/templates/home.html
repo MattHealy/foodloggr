@@ -9,7 +9,10 @@
 
                         <form method="get" id="datepicker-form">
                             <p>
-                                <input type="text" id="datepicker-input" class="datepicker form-control" value="{{ placeholder }}" name="date" style="width: 200px; display: inline; margin-right: 5px;" /><i id="datepicker-icon" class="fa fa-calendar fa-2x"></i></a>
+                                <a href="{{ url_for('main.home', date = yesterday) }}"><i class="fa fa-arrow-left"></i></a>
+                                <input type="text" id="datepicker-input" class="datepicker form-control" value="{{ placeholder }}" name="date" style="width: 200px; display: inline; margin-right: 5px;" />
+                                <a href="{{ url_for('main.home', date = tomorrow) }}"><i class="fa fa-arrow-right"></i></a>
+                                <i id="datepicker-icon" class="fa fa-calendar fa-2x"></i></a>
                             </p>
                         </form>
 

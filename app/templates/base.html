@@ -139,7 +139,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ g.user.first_name }} {{ g.user.last_name }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                            <a href="{{ url_for('main.edit_profile') }}"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
@@ -189,6 +189,13 @@
                             </li>
                             <li class="active">
                                 <i class="fa fa-user"></i> Friends
+                            </li>
+                            {% elif request.path=='/profile/edit' %}
+                            <li>
+                                <i class="fa fa-user"></i>  <a href="{{ url_for('main.home') }}">News Feed</a>
+                            </li>
+                            <li class="active">
+                                <i class="fa fa-user"></i> Profile
                             </li>
                             {% endif %}
                         </ol>

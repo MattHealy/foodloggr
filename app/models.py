@@ -1,7 +1,8 @@
 from app import db
-from flask import current_app
+from flask import current_app, flash
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
+from .email import send_email
 
 class Friendship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,6 +119,13 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def on_changed_email(target, value, oldvalue, initiator):
+        if value != oldvalue:
+            send_email(value, 'Confirm Account','mail/confirm_account', user=target, token=target.generate_token())
+            flash("A confirmation email has been sent to " + value)
+            target.confirmed = False
+
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(64))
@@ -128,3 +136,4 @@ class Entry(db.Model):
     def __repr__(self):
         return '<Entry %r>' % (self.body)
 
+db.event.listen(User.email, 'set', User.on_changed_email)

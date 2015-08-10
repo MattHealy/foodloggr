@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+                <div class="row">
+
+                    <form role="form" method="post">
+
+                        <div class="col-lg-4">
+
+                            {{ form.hidden_tag() }}
+
+                            <label for="first_name">First Name</label>
+                            {{ form.first_name(placeholder="e.g. Fred", class="form-control", required="required", autofocus="autofocus") }}
+                            {% for error in form.errors.first_name %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+
+                            <label for="last_name">Last Name</label>
+                            {{ form.last_name(placeholder="e.g. Smith", class="form-control", required="required") }}
+                            {% for error in form.errors.last_name %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+
+                            <label for="email">Email address</label>
+                            {{ form.email(placeholder="e.g. test@gmail.com", class="form-control", required="required") }}
+                            {% for error in form.errors.email %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+                <!-- /.row -->
+
+{% endblock %}

@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
-from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm
+from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm, ProfileForm
 from .. import db, lm
 from ..models import User, Entry, Friendship
 from ..email import send_email
@@ -76,9 +76,13 @@ def home():
     form.entry_date.data = placeholder
     removeform.entry_date.data = placeholder
 
+    tomorrow = tomorrow.strftime("%d-%m-%Y")
+    yesterday = (today - timedelta(days=1)).strftime("%d-%m-%Y")
+
     return render_template("home.html", form=form, removeform=removeform, entries=entries, \
                             title='News Feed', datestring = datestring, \
-                            placeholder = placeholder)
+                            placeholder = placeholder, yesterday = yesterday, \
+                            tomorrow = tomorrow)
 
 @main.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
@@ -367,6 +371,42 @@ def reset_password(token):
         return redirect(url_for('main.login'))
 
     return render_template('reset.html', title='Reset Password', form=form, user=user, token=token)
+
+@main.route('/profile/edit', methods=['GET','POST'])
+@login_required
+def edit_profile():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('main.unconfirmed'))
+
+    user = g.user
+
+    form = ProfileForm()
+
+    if form.validate_on_submit():
+
+        #existing_user = User.query.filter(User.email == form.email.data).filter(User.id != g.user.id).first()
+
+        #if existing_user is not None:
+        #    form.email.errors.append('This email address is already used - please choose another.')
+        #    return False
+
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.email = form.email.data
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Profile updated.')
+
+        return redirect(url_for('main.home'))
+
+    form.first_name.data = user.first_name
+    form.last_name.data = user.last_name
+    form.email.data = user.email
+
+    return render_template("edit_profile.html",title='Edit Profile',form=form)
 
 @lm.user_loader
 def load_user(id):
