@@ -17,10 +17,15 @@ class Config:
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
 
+    UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
+
     S3_KEY = os.environ.get('S3_KEY')
     S3_SECRET = os.environ.get('S3_SECRET')
     S3_BUCKET = 'foodlog-userphotos'
     S3_UPLOAD_DIRECTORY = '/'
+
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
     @staticmethod
     def init_app(app):

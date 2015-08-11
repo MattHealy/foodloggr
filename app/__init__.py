@@ -5,10 +5,11 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
 from flask_bootstrap import Bootstrap
+from celery import Celery
 
 from werkzeug.contrib.fixers import ProxyFix
 
-from config import config
+from config import config, Config
 
 toolbar = DebugToolbarExtension()
 db = SQLAlchemy()
@@ -18,6 +19,8 @@ lm = LoginManager()
 lm.login_view = 'main.login'
 
 mail = Mail()
+
+celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 def create_app(config_name):
 
@@ -30,6 +33,8 @@ def create_app(config_name):
     toolbar.init_app(app)
     mail.init_app(app)
     bootstrap.init_app(app)
+
+    celery.conf.update(app.config)
 
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
