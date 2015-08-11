@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+#celery worker -A celery_worker.celery --loglevel=info
+
 import os
 
 if os.path.exists('.env'):

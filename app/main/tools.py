@@ -3,9 +3,21 @@ import boto
 import os.path
 from flask import current_app as app
 from werkzeug.utils import secure_filename
+from .. import celery
 
-def s3_upload(source_file, acl='public-read'):
-    """ Uploads WTForm File Object to Amazon S3
+def local_upload(source_file):
+    source_filename = secure_filename(source_file.data.filename)
+    source_extension = os.path.splitext(source_filename)[1]
+    destination_filename = uuid4().hex + source_extension
+    source_file.data.save(os.path.join(app.config['UPLOAD_FOLDER'], destination_filename))
+
+    s3_upload.delay(destination_filename)
+
+    return destination_filename
+
+@celery.task
+def s3_upload(source_filename, acl='public-read'):
+    """ Uploads Local File Object to Amazon S3
 
         Expects following app.config attributes to be set:
             S3_KEY              :   S3 API Key
@@ -19,17 +31,13 @@ def s3_upload(source_file, acl='public-read'):
         the source file.
     """
 
-    source_filename = secure_filename(source_file.data.filename)
-    source_extension = os.path.splitext(source_filename)[1]
-
-    destination_filename = uuid4().hex + source_extension
-
     # Connect to S3 and upload file.
     conn = boto.connect_s3(app.config["S3_KEY"], app.config["S3_SECRET"])
     b = conn.get_bucket(app.config["S3_BUCKET"])
 
-    sml = b.new_key("/".join([app.config["S3_UPLOAD_DIRECTORY"], destination_filename]))
-    sml.set_contents_from_string(source_file.data.read())
+    sml = b.new_key("/".join([app.config["S3_UPLOAD_DIRECTORY"], source_filename]))
+    sml.set_contents_from_filename(os.path.join(app.config['UPLOAD_FOLDER'], source_filename))
     sml.set_acl(acl)
 
-    return destination_filename
+    os.unlink(os.path.join(app.config['UPLOAD_FOLDER'], source_filename))
+
