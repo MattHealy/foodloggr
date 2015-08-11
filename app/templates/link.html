@@ -16,7 +16,12 @@
 
                                         {% for friendship in g.user.friends %}
                                             <tr>
-                                               <td>{{ friendship.friend.first_name }} {{ friendship.friend.last_name }}</td>
+                                               <td>
+                                                   {% if friendship.friend.photo %}
+                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ friendship.friend.photo }}" height="60" />
+                                                   {% endif %}
+                                                   {{ friendship.friend.first_name }} {{ friendship.friend.last_name }}
+                                               </td>
                                                <td width="20%">
                                                    <form method="post" action="{{ url_for('main.unlink', id=friendship.friend.id) }}">
                                                        <button type="submit" class="btn btn-danger delete-button" style="display: inline-block">

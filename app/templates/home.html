@@ -36,7 +36,11 @@
                                     {% for entry in entries %}
                                         <tr>
                                            {% if entry.user == g.user %}
+                                           {% if g.user.photo %}
+                                           <td valign="middle"><img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="60" /></td>
+                                           {% else %}
                                            <td valign="middle"><strong>Me</strong></td>
+                                           {% endif %}
                                            <td valign="middle"><strong>{{ entry.body }}</strong></td>
                                            <td width="10%">
                                                <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
@@ -45,7 +49,11 @@
                                                </form>
                                            </td>
                                            {% else %}
+                                           {% if entry.user.photo %}
+                                           <td valign="middle"><img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" /> {{ entry.user.first_name }}</td>
+                                           {% else %}
                                            <td valign="middle">{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
+                                           {% endif %}
                                            <td valign="middle">{{ entry.body }}</td>
                                            <td width="10%">
                                            </td>
