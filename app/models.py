@@ -3,6 +3,7 @@ from flask import current_app, flash
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from .email import send_email
+import os.path
 
 class Friendship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +39,15 @@ class User(db.Model):
                               lazy='dynamic', 
                               foreign_keys='Friendship.friend_id',
               )
+
+    def get_photo(self):
+        if self.photo:
+            if os.path.isfile(os.path.join(current_app.config['UPLOAD_FOLDER'], self.photo)):
+                return url_for('main.show_upload', filename = self.photo)
+            else:
+                return 'http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/' + self.photo
+        else:
+            return None
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:
