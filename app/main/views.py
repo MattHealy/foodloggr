@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm, ProfileForm
-from .. import db, lm
+from .. import db, lm, csrf
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from .tools import local_upload, s3_upload

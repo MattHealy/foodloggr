@@ -5,6 +5,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
 from flask_bootstrap import Bootstrap
+from flask_wtf.csrf import CsrfProtect
 from celery import Celery
 
 from werkzeug.contrib.fixers import ProxyFix
@@ -22,6 +23,8 @@ mail = Mail()
 
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
+csrf = CsrfProtect()
+
 def create_app(config_name):
 
     app = Flask(__name__)
@@ -33,6 +36,8 @@ def create_app(config_name):
     toolbar.init_app(app)
     mail.init_app(app)
     bootstrap.init_app(app)
+
+    csrf.init_app(app)
 
     celery.conf.update(app.config)
 

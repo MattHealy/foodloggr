@@ -1,13 +1,24 @@
                                            <tr>
-                                           {% if entry.user == g.user %}
-                                               <td valign="middle">
-                                               {% if g.user.photo %}
-                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="60" width="45" />
+                                               <td valign="top">
+                                               {% if entry.user.photo %}
+                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" width="45" />
                                                {% endif %}
-                                               {{ g.user.first_name }} {{ g.user.last_name }}
+
+                                               {% if entry.user == g.user %}<strong>{% endif %}
+                                               {{ entry.user.first_name }} {{ entry.user.last_name }}
+                                               {% if entry.user == g.user %}</strong>{% endif %}
+
                                                </td>
-                                               <td valign="middle"><strong>{{ entry.body }}</strong></td>
+
+                                               <td valign="middle">
+                                               {% if entry.user == g.user %}<strong>{% endif %}
+                                               {{ entry.body }}
+                                               {% if entry.user == g.user %}</strong>{% endif %}
+                                               </td>
+
                                                <td width="10%" align="center">
+
+                                           {% if entry.user == g.user %}
 
                                                {% if entry.get_vote_count() > 0 %}
                                                    <i class="fa fa-fw fa-smile-o fa-3x"></i>
@@ -26,13 +37,7 @@
                                                    </form>
                                                </td>
                                            {% else %}
-                                               <td valign="middle">
-                                               {% if entry.user.photo %}
-                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" width="45" />
-                                               {% endif %}
-                                               {{ entry.user.first_name }} {{ entry.user.last_name }}</td>
-                                               <td valign="middle">{{ entry.body }}</td>
-                                               <td width="10%">
+
                                                <button type="button" id="upvote-{{ entry.id }}" class="upvote btn 
 
                                                {% for vote in entry.votes %}
@@ -42,6 +47,7 @@
                                                        {% endif %}
                                                    {% endif %}
                                                {% endfor %}"style="display: inline-block; margin-bottom: 4px"><i class="fa fa-fw fa-thumbs-up"></i></button>
+
                                                <button type="button" id="downvote-{{ entry.id }}" class="downvote btn
                                                {% for vote in entry.votes %}
                                                    {% if vote.from_userid == g.user.id %}
