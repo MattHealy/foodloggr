@@ -1,7 +1,7 @@
                                            <tr>
                                                <td valign="top">
                                                {% if entry.user.photo %}
-                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" width="45" />
+                                                   <img src="{{ entry.user.get_photo() }}" height="60" width="45" style="float:left;" />
                                                {% endif %}
 
                                                {% if entry.user == g.user %}<strong>{% endif %}

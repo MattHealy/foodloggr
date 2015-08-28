@@ -18,7 +18,7 @@
                                             <tr>
                                                <td>
                                                    {% if friendship.friend.photo %}
-                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ friendship.friend.photo }}" height="60" />
+                                                   <img src="{{ friendship.friend.get_photo() }}" height="60" width="45" />
                                                    {% endif %}
                                                    {{ friendship.friend.first_name }} {{ friendship.friend.last_name }}
                                                </td>

@@ -1,5 +1,5 @@
 from app import db
-from flask import current_app, flash
+from flask import current_app, flash, url_for
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from .email import send_email
