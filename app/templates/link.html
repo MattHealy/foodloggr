@@ -16,13 +16,21 @@
 
                                         {% for friendship in g.user.friends %}
                                             <tr>
-                                               <td>
-                                                   {% if friendship.friend.photo %}
-                                                   <img src="{{ friendship.friend.get_photo() }}" height="60" width="45" />
-                                                   {% endif %}
+                                               <td align="center">
+
+                                               {% if friendship.friend.photo %}
+                                                   <img src="{{ friendship.friend.get_photo() }}" height="90" />
+                                               {% endif %}
+
+                                               <p style="margin-top: 10px;">
                                                    {{ friendship.friend.first_name }} {{ friendship.friend.last_name }}
+                                               </p>
+                                               <p>
+                                                   Friends since {{ moment(friendship.timestamp).format("D MMM YYYY") }}
+                                               </p>
+
                                                </td>
-                                               <td width="20%">
+                                               <td width="20%" valign="middle">
                                                    <form method="post" action="{{ url_for('main.unlink', id=friendship.friend.id) }}">
                                                        <button type="submit" class="btn btn-danger delete-button" style="display: inline-block">
                                                            <i class="fa fa-fw fa-user-times fa-1"></i>

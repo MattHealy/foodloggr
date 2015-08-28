@@ -7,4 +7,4 @@ To accept this invitation, simply copy and paste the below link in to your web b
 {{ url_for('main.accept_link', token=token, _external=True) }}
 
 Regards,
-What Have You Eaten
+foodloggr

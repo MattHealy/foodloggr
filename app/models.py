@@ -2,7 +2,9 @@ from app import db
 from flask import current_app, flash, url_for
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 from .email import send_email
+
 import os.path
 
 class Friendship(db.Model):
@@ -10,6 +12,7 @@ class Friendship(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     friend_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     confirmed = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime)
     user = db.relationship('User', primaryjoin="Friendship.user_id == User.id")
     friend = db.relationship('User', primaryjoin="Friendship.friend_id == User.id")
 
@@ -84,8 +87,9 @@ class User(db.Model):
             friendship = Friendship.query.filter_by(user_id = self.id, friend_id = friend.id).first()
             if friendship:
                 friendship.confirmed = True
+                friendship.timestamp = datetime.utcnow()
             else:
-                friendship =  Friendship(user_id = self.id, friend_id = friend.id, confirmed = True)
+                friendship =  Friendship(user_id = self.id, friend_id = friend.id, confirmed = True, timestamp = datetime.utcnow())
 
             db.session.add(friendship)
             db.session.commit()

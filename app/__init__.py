@@ -4,6 +4,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
+from flask.ext.moment import Moment
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
 from celery import Celery
@@ -20,6 +21,7 @@ lm = LoginManager()
 lm.login_view = 'main.login'
 
 mail = Mail()
+moment = Moment()
 
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
@@ -36,6 +38,7 @@ def create_app(config_name):
     toolbar.init_app(app)
     mail.init_app(app)
     bootstrap.init_app(app)
+    moment.init_app(app)
 
     csrf.init_app(app)
 

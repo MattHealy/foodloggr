@@ -6,9 +6,9 @@
 
     {% block title %}
     {% if title %}
-    {{title}} - What Have You Eaten
+    {{title}} - foodloggr
     {% else %}
-    What Have You Eaten
+    foodloggr
     {% endif %}
     {% endblock %}
 
@@ -29,10 +29,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Simple Food Logging">
     <meta name="author" content="Healy Consulting">
-    <meta name="keywords" content="Food,Logging,Simple,What,Have,You,Eaten" />
+    <meta name="keywords" content="Food,Logging,Simple,foodloggr" />
     <meta property="og:url" content="{{ url_for('main.index', _external=True) }}" />
-    <meta property="og:title" content="What Have You Eaten" />
-    <meta property="og:description" content="What Have You Eaten - Simple Food Logging" />
+    <meta property="og:title" content="foodloggr" />
+    <meta property="og:description" content="foodloggr - Simple Food Logging" />
     {% endblock %}
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -60,7 +60,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('main.home') }}">What Have You Eaten</a>
+                <a class="navbar-brand" href="{{ url_for('main.home') }}">foodloggr</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -131,7 +131,7 @@
                                     {% endfor %}
                                 {% else %}
                                         <li>
-                                            No alerts
+                                            <a href="#">No alerts</a>
                                         </li>
                                 {% endif %}
                             {% endif %}
@@ -316,8 +316,7 @@
 
     </script>
 
-
-
+    {{ moment.include_moment() }}
 
     {% endblock %}
 

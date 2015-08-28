@@ -10,7 +10,7 @@ class Config:
     MAIL_PORT = os.environ.get('MAIL_PORT')
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_SUBJECT_PREFIX = 'What Have You Eaten:'
+    MAIL_SUBJECT_PREFIX = 'foodloggr:'
     MAIL_SENDER = os.environ.get('MAIL_SENDER')
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
