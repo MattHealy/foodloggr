@@ -31,7 +31,7 @@
                             <label for="photo">Photo</label>
                             {% if g.user.photo %}
                             <p class="form-control-static">Current photo:
-                               <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="100" />
+                               <img src="{{ g.user.get_photo() }}" height="100" />
                             </p>
                             {% endif %}
                             {{ form.photo(placeholder="Upload your photo", class="form-control") }}

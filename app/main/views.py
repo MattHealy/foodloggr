@@ -7,7 +7,7 @@ from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, Forg
 from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
-from .tools import local_upload, s3_upload
+from .tools import local_upload
 
 @main.before_request
 def before_request():
@@ -126,6 +126,10 @@ def vote():
         db.session.add(vote)
         db.session.commit()
         return '', 201
+
+@main.route('/uploads/<filename>')
+def show_upload(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'],filename)
 
 @main.route('/friend/<int:id>/remove', methods=['POST'])
 @login_required
