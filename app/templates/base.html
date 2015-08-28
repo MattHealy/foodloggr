@@ -182,6 +182,7 @@
                         <h1 class="page-header">
                             {{ title }}
                         </h1>
+                        <!--
                         <ol class="breadcrumb">
                             {% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %}
                             <li class="active">
@@ -203,6 +204,7 @@
                             </li>
                             {% endif %}
                         </ol>
+                        -->
                     </div>
                 </div>
                 <!-- /.row -->
@@ -299,6 +301,16 @@
                  });
 
              });
+
+             $(".delete-entry").click(function() {
+
+                 var element = this.id;
+                 entryid = element.split('-')[1];
+
+                 element = 'delete-' + entryid;
+
+             });
+
 
          });
 

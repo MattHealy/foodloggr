@@ -1,13 +1,10 @@
-                        {% if entries %}
-                            {% if entries.count() > 0 %}
-                                <div class="col-sm-8">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <tbody>
-                                    {% for entry in entries %}
-                                        {% include "_newsfeeditem.html" %}
-                                    {% endfor %}
-                                    </tbody>
-                                    </table>
-                                </div>
-                            {% endif %}
-                        {% endif %}
+{% if entries %}
+    {% if entries.count() > 0 %}
+        <hr />
+        <div class="container-fluid">
+            {% for entry in entries %}
+                {% include "_newsfeeditem.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endif %}

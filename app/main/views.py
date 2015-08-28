@@ -40,7 +40,7 @@ def home():
         else:
             entry_date = date.today()
 
-        entry = Entry(body=form.body.data, entry_date=entry_date, timestamp=datetime.utcnow(), user_id=g.user.id)
+        entry = Entry(body=form.body.data.strip(), entry_date=entry_date, timestamp=datetime.utcnow(), user_id=g.user.id)
 
         db.session.add(entry)
         db.session.commit()
@@ -54,9 +54,17 @@ def home():
         try:
             today = datetime.strptime(diary_date, "%d-%m-%Y").date()
             realtoday = date.today()
+            realtomorrow = realtoday + timedelta(days=1)
+            realyesterday = realtoday - timedelta(days=1)
             datestring = today.strftime("%e %b")
+
             if today == realtoday:
                 datestring = 'Today'
+            elif today == realtomorrow:
+                datestring = 'Tomorrow'
+            elif today == realyesterday:
+                datestring = 'Yesterday'
+
             placeholder = today.strftime("%d-%m-%Y")
         except:
             today = date.today()

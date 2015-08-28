@@ -8,7 +8,7 @@
 {% block content %}
 
                 <div class="row">
-                    <div class="col-lg-10">
+                    <div class="center-block text-center">
 
                         <h1>Food Diary for <strong>{{ datestring }}</strong></h1>
 
@@ -26,16 +26,17 @@
                             {{ form.hidden_tag() }}
 
                             <div class="form-group">
-                                {{ form.body(placeholder="Enter food", class="form-control", required="required", autofocus="autofocus") }}
-                                <br />
-                                <button class="btn btn-lg btn-success" type="submit">Add food</button>
+                                {{ form.body(placeholder="Enter food", class="form-control", required="required", autofocus="autofocus", style="display: inline; margin-right: 5px; margin-left: 15px; width: auto;") }}
+                                <button class="btn btn-success" type="submit">Add food</button>
                             </div>
 
                         </form>
 
-                        {% include "newsfeed.html" %}
-
                     </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    {% include "newsfeed.html" %}
                 </div>
                 <!-- /.row -->
 
