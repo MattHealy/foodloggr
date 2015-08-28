@@ -40,24 +40,23 @@
                                                {% if g.user.photo %}
                                                    <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="60" width="45" />
                                                {% endif %}
-                                               {{ g.user.firstname }} {{ g.user.lastname }}
+                                               {{ g.user.first_name }} {{ g.user.last_name }}
                                                </td>
                                                <td valign="middle"><strong>{{ entry.body }}</strong></td>
-                                               <td width="10%">
-                                               {% if entry.votes.count() > 0 %}
-                                                   {% for vote in entry.votes %}
-                                                       {% if vote.upvote %}
-                                                           Good job!
-                                                       {% else %}
-                                                           Not so good!
-                                                       {% endif %}
-                                                   {% endfor %}
+                                               <td width="10%" align="center">
+                                               {% if entry.get_vote_count() > 0 %}
+                                               <i class="fa fa-fw fa-smile-o fa-3x"></i>
+                                               {% elif entry.get_vote_count() == 0 %}
+                                               <i class="fa fa-fw fa-meh-o fa-3x"></i>
+                                               {% else %}
+                                               <i class="fa fa-fw fa-frown-o fa-3x"></i>
                                                {% endif %}
+                                               <br /><strong>{{ entry.get_vote_count() }}</strong>
                                                </td>
                                                <td width="10%">
                                                    <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
                                                        {{ removeform.hidden_tag() }}
-                                                       <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash fa-1"></i></button>
+                                                       <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash"></i></button>
                                                    </form>
                                                </td>
                                            {% else %}
@@ -76,7 +75,7 @@
                                                            btn-success
                                                        {% endif %}
                                                    {% endif %}
-                                               {% endfor %}"style="display: inline-block; margin-bottom: 4px"><i class="fa fa-fw fa-thumbs-up fa-1"></i></button>
+                                               {% endfor %}"style="display: inline-block; margin-bottom: 4px"><i class="fa fa-fw fa-thumbs-up"></i></button>
                                                <button type="button" id="downvote-{{ entry.id }}" class="downvote btn
                                                {% for vote in entry.votes %}
                                                    {% if vote.from_userid == g.user.id %}
@@ -84,7 +83,7 @@
                                                            btn-danger
                                                        {% endif %}
                                                    {% endif %}
-                                               {% endfor %}" style="display: inline-block"><i class="fa fa-fw fa-thumbs-down fa-1"></i></button>
+                                               {% endfor %}" style="display: inline-block"><i class="fa fa-fw fa-thumbs-down"></i></button>
 
                                                </td>
                                                <td width="10%">

@@ -134,7 +134,16 @@ class Entry(db.Model):
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    votes = db.relationship('Vote', backref='entry', lazy='dynamic')
+    votes = db.relationship('Vote', backref='entry', lazy='dynamic', cascade="all, delete")
+
+    def get_vote_count(self):
+        count = 0
+        for vote in self.votes:
+            if vote.upvote:
+                count+=1
+            else:
+                count-=1
+        return count
 
     def __repr__(self):
         return '<Entry %r>' % (self.body)
