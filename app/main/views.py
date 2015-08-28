@@ -5,7 +5,7 @@ from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm, ProfileForm
 from .. import db, lm
-from ..models import User, Entry, Friendship
+from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from .tools import local_upload, s3_upload
 
@@ -101,6 +101,31 @@ def remove_entry(id):
 
     else:
         return redirect(url_for('main.home'))
+
+@main.route('/vote', methods=['POST'])
+@login_required
+def vote():
+
+    data = request.get_json()
+    entry_id = data.get('entry_id')
+    upvote = data.get('upvote')
+
+    entry = Entry.query.filter(Entry.id == entry_id).first_or_404()
+
+    existing_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote == upvote, Vote.from_userid == g.user.id).first()
+    existing_opposite_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote != upvote, Vote.from_userid == g.user.id).first()
+
+    if existing_opposite_vote:
+        db.session.delete(existing_opposite_vote)
+
+    if existing_vote:
+        db.session.delete(existing_vote)
+        return '', 204
+    else:
+        vote = Vote(entry_id = entry_id, from_userid = g.user.id, upvote = upvote)
+        db.session.add(vote)
+        db.session.commit()
+        return '', 201
 
 @main.route('/friend/<int:id>/remove', methods=['POST'])
 @login_required

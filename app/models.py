@@ -134,7 +134,15 @@ class Entry(db.Model):
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    votes = db.relationship('Vote', backref='entry', lazy='dynamic')
+
     def __repr__(self):
         return '<Entry %r>' % (self.body)
+
+class Vote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entry.id'))
+    upvote = db.Column(db.Boolean)
+    from_userid = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 db.event.listen(User.email, 'set', User.on_changed_email)

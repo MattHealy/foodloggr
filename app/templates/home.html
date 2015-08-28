@@ -36,31 +36,63 @@
                                     {% for entry in entries %}
                                         <tr>
                                            {% if entry.user == g.user %}
-                                           {% if g.user.photo %}
-                                           <td valign="middle"><img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="60" /></td>
+                                               <td valign="middle">
+                                               {% if g.user.photo %}
+                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ g.user.photo }}" height="60" width="45" />
+                                               {% endif %}
+                                               {{ g.user.firstname }} {{ g.user.lastname }}
+                                               </td>
+                                               <td valign="middle"><strong>{{ entry.body }}</strong></td>
+                                               <td width="10%">
+                                               {% if entry.votes.count() > 0 %}
+                                                   {% for vote in entry.votes %}
+                                                       {% if vote.upvote %}
+                                                           Good job!
+                                                       {% else %}
+                                                           Not so good!
+                                                       {% endif %}
+                                                   {% endfor %}
+                                               {% endif %}
+                                               </td>
+                                               <td width="10%">
+                                                   <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
+                                                       {{ removeform.hidden_tag() }}
+                                                       <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash fa-1"></i></button>
+                                                   </form>
+                                               </td>
                                            {% else %}
-                                           <td valign="middle"><strong>Me</strong></td>
+                                               <td valign="middle">
+                                               {% if entry.user.photo %}
+                                                   <img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" width="45" />
+                                               {% endif %}
+                                               {{ entry.user.first_name }} {{ entry.user.last_name }}</td>
+                                               <td valign="middle">{{ entry.body }}</td>
+                                               <td width="10%">
+                                               <button type="button" id="upvote-{{ entry.id }}" class="upvote btn 
+
+                                               {% for vote in entry.votes %}
+                                                   {% if vote.from_userid == g.user.id %}
+                                                       {% if vote.upvote %}
+                                                           btn-success
+                                                       {% endif %}
+                                                   {% endif %}
+                                               {% endfor %}"style="display: inline-block; margin-bottom: 4px"><i class="fa fa-fw fa-thumbs-up fa-1"></i></button>
+                                               <button type="button" id="downvote-{{ entry.id }}" class="downvote btn
+                                               {% for vote in entry.votes %}
+                                                   {% if vote.from_userid == g.user.id %}
+                                                       {% if not vote.upvote %}
+                                                           btn-danger
+                                                       {% endif %}
+                                                   {% endif %}
+                                               {% endfor %}" style="display: inline-block"><i class="fa fa-fw fa-thumbs-down fa-1"></i></button>
+
+                                               </td>
+                                               <td width="10%">
+                                               </td>
                                            {% endif %}
-                                           <td valign="middle"><strong>{{ entry.body }}</strong></td>
-                                           <td width="10%">
-                                               <form method="post" action="{{ url_for('main.remove_entry', id=entry.id) }}">
-                                                   {{ removeform.hidden_tag() }}
-                                                   <button type="submit" class="btn btn-danger delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash fa-1"></i></button>
-                                               </form>
-                                           </td>
-                                           {% else %}
-                                           {% if entry.user.photo %}
-                                           <td valign="middle"><img src="http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/{{ entry.user.photo }}" height="60" /> {{ entry.user.first_name }}</td>
-                                           {% else %}
-                                           <td valign="middle">{{ entry.user.first_name }} {{ entry.user.last_name }}</td>
-                                           {% endif %}
-                                           <td valign="middle">{{ entry.body }}</td>
-                                           <td width="10%">
-                                           </td>
-                                           {% endif %}
-                                        </tr>
+                                           </tr>
                                     {% endfor %}
-                                        </tbody>
+                                    </tbody>
                                     </table>
                                 </div>
                             {% endif %}
