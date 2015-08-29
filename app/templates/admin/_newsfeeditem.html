@@ -5,11 +5,11 @@
                                            <div class="col-xs-3 col-md-2 text-center">
 
                                                {% if entry.user.photo %}
-                                                   <img src="{{ entry.user.get_photo() }}" height="90" style="max-width: 90px" />
+                                                   <a href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}"><img src="{{ entry.user.get_photo() }}" height="90" style="max-width: 90px" /></a>
                                                {% endif %}
 
                                                <p style="margin-top: 10px;">
-                                               {{ entry.user.first_name }} {{ entry.user.last_name }}
+                                               <a style="color: black;" href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}">{{ entry.user.first_name }} {{ entry.user.last_name }}</a>
                                                </p>
 
                                            </div>
@@ -17,6 +17,14 @@
                                            <div class="col-xs-4 col-md-7">
 
                                                {{ entry.body }}
+
+                                               {% if showtimestamp %}
+                                               <p>
+                                               <small>
+                                                   {{ moment(entry.timestamp).format("D MMM") }}
+                                               </small>
+                                               </p>
+                                               {% endif %}
 
                                            </div>
 

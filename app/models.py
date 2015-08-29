@@ -117,6 +117,7 @@ class User(db.Model):
     def friends_entries(self, today, tomorrow):
         return Entry.query.join(Friendship, (Friendship.friend_id == Entry.user_id)). \
                  filter(Friendship.user_id == self.id). \
+                 filter(Friendship.confirmed == True). \
                  filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow). \
                  order_by(Entry.timestamp.desc())
 

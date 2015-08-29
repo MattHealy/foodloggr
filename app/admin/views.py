@@ -89,6 +89,31 @@ def home():
                             placeholder = placeholder, yesterday = yesterday, \
                             tomorrow = tomorrow)
 
+@admin.route('/user/<int:user_id>/feed', methods=['GET'])
+@login_required
+def user_feed(user_id):
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    user = None
+    if user_id == g.user.id:
+        user = g.user
+    else:
+        user = User.query.join(Friendship, (Friendship.friend_id == user_id)). \
+                 filter(Friendship.user_id == g.user.id). \
+                 filter(User.id == user_id). \
+                 filter(Friendship.confirmed == True).first_or_404()
+
+    tomorrow = datetime.today() + timedelta(days=1)
+    entries = user.entries.filter(Entry.entry_date < tomorrow).order_by(Entry.timestamp.desc()).limit(50)
+
+    removeform = RemoveEntryForm()
+
+    session['next_url'] = url_for('admin.user_feed', user_id = user.id)
+
+    return render_template("admin/userfeed.html", entries=entries, user=user, showtimestamp=True, removeform=removeform)
+
 @admin.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
 def remove_entry(id):
@@ -101,7 +126,11 @@ def remove_entry(id):
         db.session.delete(entry)
         db.session.commit()
 
-        return redirect(url_for('admin.home', date = form.entry_date.data.strip()))
+        next_url = session.pop('next_url')
+        if next_url:
+            return redirect(next_url)
+        else:
+            return redirect(url_for('admin.home', date = form.entry_date.data.strip()))
 
     else:
         return redirect(url_for('admin.home'))

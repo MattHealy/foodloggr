@@ -59,9 +59,6 @@ def login():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('admin.home'))
 
-    if request.args.get('next'):
-        session['next_url'] = request.args.get('next')
-
     form = LoginForm()
 
     if form.validate_on_submit():
