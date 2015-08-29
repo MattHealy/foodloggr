@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import main
 from .forms import LoginForm, RegisterForm, EntryForm, LinkForm, ResetForm, ForgotForm, RemoveEntryForm, ProfileForm
-from .. import db, lm, csrf
+from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from .tools import local_upload
@@ -35,8 +35,8 @@ def home():
 
         entry_date = None
 
-        if form.entry_date.data:
-            entry_date = datetime.strptime(form.entry_date.data, "%d-%m-%Y").date()
+        if form.entry_date.data.strip():
+            entry_date = datetime.strptime(form.entry_date.data.strip(), "%d-%m-%Y").date()
         else:
             entry_date = date.today()
 
@@ -45,7 +45,7 @@ def home():
         db.session.add(entry)
         db.session.commit()
 
-        return redirect(url_for('main.home', date = form.entry_date.data))
+        return redirect(url_for('main.home', date = form.entry_date.data.strip()))
 
     diary_date = request.args.get('date')
     placeholder = None
@@ -105,7 +105,7 @@ def remove_entry(id):
         db.session.delete(entry)
         db.session.commit()
 
-        return redirect(url_for('main.home', date = form.entry_date.data))
+        return redirect(url_for('main.home', date = form.entry_date.data.strip()))
 
     else:
         return redirect(url_for('main.home'))
@@ -149,19 +149,19 @@ def unlink(id):
         flash('User not found') 
     if friend == g.user:
         flash('You cannot unlink yourself.') 
-        return redirect(url_for('main.link'))
+        return redirect(url_for('main.friends'))
 
     user = g.user.unlink(friend)
 
     if user is None:
         flash('Cannot unlink ' + friend.first_name)
-        return redirect('main.link')
+        return redirect('main.friends')
 
     db.session.add(user)
     db.session.commit()
 
     flash('Successfully unfriended ' + friend.first_name + ' ' + friend.last_name)
-    return redirect(url_for('main.link'))
+    return redirect(url_for('main.friends'))
 
 @main.route('/unconfirmed', methods=['GET'])
 @login_required
@@ -239,11 +239,11 @@ def accept_link(token):
     else:
         flash('Invalid token')
 
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.friends'))
 
-@main.route('/link', methods=['GET','POST'])
+@main.route('/friends', methods=['GET','POST'])
 @login_required
-def link():
+def friends():
 
     if not g.user.is_confirmed():
         return redirect(url_for('main.unconfirmed'))
@@ -251,7 +251,7 @@ def link():
     form = LinkForm()
 
     if form.validate_on_submit():
-        friend = User.query.filter_by(email = form.email.data).first()
+        friend = User.query.filter_by(email = form.email.data.strip()).first()
         if friend:
             if friend.id == g.user.id:
                 flash('You cannot enter your own email address here.')
@@ -264,12 +264,12 @@ def link():
                     db.session.add(friendship)
                     db.session.commit()
                 token = g.user.generate_friend_token(friend)
-                send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
-                flash('A friend request has been sent to ' + form.email.data)
+                send_email(form.email.data.strip(), g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
+                flash('A friend request has been sent to ' + form.email.data.strip())
         else:
 
             # Add a "Ghost" account for this user
-            friend = User(email=form.email.data, is_confirmed=False)
+            friend = User(email=form.email.data.strip(), is_confirmed=False)
             db.session.add(friend)
             db.session.commit()
 
@@ -277,11 +277,11 @@ def link():
             friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
             db.session.add(friendship)
             db.session.commit()
-            send_email(form.email.data, g.user.first_name + ' wants to share their food diary with you!','mail/invite_friend', user=g.user)
-            flash('A friend request has been sent to ' + form.email.data)
-        return redirect(url_for('main.link'))
+            send_email(form.email.data.strip(), g.user.first_name + ' wants to share their food diary with you!','mail/invite_friend', user=g.user)
+            flash('A friend request has been sent to ' + form.email.data.strip())
+        return redirect(url_for('main.friends'))
 
-    return render_template("link.html", form=form, title='Friends')
+    return render_template("friends.html", form=form, title='Friends')
 
 @main.route('/confirmation_email', methods=['GET'])
 @login_required
@@ -307,16 +307,16 @@ def register():
 
     if form.validate_on_submit():
 
-        user = User.query.filter(User.email == form.email.data).filter(User.password_hash == None).first()
+        user = User.query.filter(User.email == form.email.data.strip()).filter(User.password_hash == None).first()
 
         if user:
-            user.first_name = form.first_name.data
-            user.last_name = form.last_name.data
+            user.first_name = form.first_name.data.strip()
+            user.last_name = form.last_name.data.strip()
             user.first_login = datetime.utcnow()
-            user.password = form.password.data
+            user.password = form.password.data.strip()
             user.is_confirmed = False
         else:
-            user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, first_login=datetime.utcnow(), password=form.password.data, is_confirmed=False)
+            user = User(email=form.email.data.strip(), first_name=form.first_name.data.strip(), last_name=form.last_name.data.strip(), first_login=datetime.utcnow(), password=form.password.data.strip(), is_confirmed=False)
 
         user.last_seen = datetime.utcnow()
         user.last_login = datetime.utcnow()
@@ -324,7 +324,7 @@ def register():
         db.session.commit()
         login_user(user, True)
         token = user.generate_token()
-        send_email(form.email.data, 'Confirm Account','mail/confirm_account', user=user, token=token)
+        send_email(form.email.data.strip(), 'Confirm Account','mail/confirm_account', user=user, token=token)
         send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
         return redirect(url_for('main.unconfirmed'))
 
@@ -342,8 +342,8 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter(User.email==form.email.data).filter(User.password_hash!=None).first()
-        if user is not None and user.verify_password(form.password.data):
+        user = User.query.filter(User.email==form.email.data.strip()).filter(User.password_hash!=None).first()
+        if user is not None and user.verify_password(form.password.data.strip()):
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for('main.home'))
         flash('Invalid username or password.')
@@ -366,7 +366,7 @@ def forgot():
     form = ForgotForm()
 
     if form.validate_on_submit():
-        user = User.query.filter(User.email==form.email.data).filter(User.password_hash!=None).first()
+        user = User.query.filter(User.email==form.email.data.strip()).filter(User.password_hash!=None).first()
         if user is None:
             flash('Sorry, we could not find a user with that email address.')
         else:
@@ -402,7 +402,7 @@ def reset_password(token):
     form = ResetForm()
 
     if form.validate_on_submit():
-        user.password = form.password.data
+        user.password = form.password.data.strip()
         db.session.add(user)
         db.session.commit()
         flash('Your password has now been reset.')
@@ -423,15 +423,15 @@ def edit_profile():
 
     if form.validate_on_submit():
 
-        #existing_user = User.query.filter(User.email == form.email.data).filter(User.id != g.user.id).first()
+        #existing_user = User.query.filter(User.email == form.email.data.strip()).filter(User.id != g.user.id).first()
 
         #if existing_user is not None:
         #    form.email.errors.append('This email address is already used - please choose another.')
         #    return False
 
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        user.email = form.email.data
+        user.first_name = form.first_name.data.strip()
+        user.last_name = form.last_name.data.strip()
+        user.email = form.email.data.strip()
 
         if form.photo.data.filename:
             output = local_upload(form.photo)

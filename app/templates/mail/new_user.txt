@@ -1,1 +1,1 @@
-User {{ user.first_name }} {{ user.last_name }} has joined.
+User {{ user.first_name }} {{ user.last_name }} ({{ user.email }}) has joined.

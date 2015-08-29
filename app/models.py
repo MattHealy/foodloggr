@@ -29,18 +29,18 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean)
     photo = db.Column(db.String(128))
 
-    entries = db.relationship('Entry', backref='user', lazy='dynamic')
+    entries = db.relationship('Entry', backref='user', lazy='dynamic', cascade="all, delete")
 
     friends = db.relationship('Friendship',
                               primaryjoin="and_(Friendship.user_id == User.id, Friendship.confirmed == True)",
                               lazy='dynamic', 
-                              foreign_keys='Friendship.user_id',
+                              foreign_keys='Friendship.user_id', cascade="all, delete"
               )
 
     friend_requests = db.relationship('Friendship',
                               primaryjoin="and_(Friendship.friend_id == User.id, Friendship.confirmed == False)",
                               lazy='dynamic', 
-                              foreign_keys='Friendship.friend_id',
+                              foreign_keys='Friendship.friend_id', cascade="all, delete"
               )
 
     def get_photo(self):
@@ -102,7 +102,7 @@ class User(db.Model):
     def unlink(self, friend):
         if self.is_linked(friend):
 
-            friendship = Friendship.query.filter_by(user_id = self.id, friend_id = friend.id)
+            friendship = Friendship.query.filter_by(user_id = self.id, friend_id = friend.id).first()
             db.session.delete(friendship)
             db.session.commit()
 
@@ -136,7 +136,7 @@ class User(db.Model):
 
     @staticmethod
     def on_changed_email(target, value, oldvalue, initiator):
-        if value != oldvalue:
+        if value != oldvalue and target.confirmed:
             send_email(value, 'Confirm Account','mail/confirm_account', user=target, token=target.generate_token())
             flash("A confirmation email has been sent to " + value)
             target.confirmed = False

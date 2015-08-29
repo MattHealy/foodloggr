@@ -46,8 +46,8 @@
                         <div class="form-group">
 
                             <label class="col-sm-2 control-label" for="photo">Photo</label>
-                            {% if g.user.photo %}
                             <div class="col-sm-4">
+                            {% if g.user.photo %}
                             <p class="form-control-static">
                                <img src="{{ g.user.get_photo() }}" height="100" />
                             </p>

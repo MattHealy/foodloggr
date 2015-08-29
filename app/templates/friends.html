@@ -4,23 +4,25 @@
 
                 <div class="row">
 
-                    <div class="col-lg-6">
-                        <h1>Your Friends</h1>
+                    <div class="col-md-8">
 
                         {% if g.user.friends %}
                             {% if g.user.friends.count() > 0 %}
+                                {% for friendship in g.user.friends %}
 
-                                <div class="col-sm-8">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <tbody>
+                                <div class="panel panel-default">
+                                   <div class="panel-heading">
+                                       <div class="row">
 
-                                        {% for friendship in g.user.friends %}
-                                            <tr>
-                                               <td align="center">
+                                           <div class="col-xs-6 col-md-3 text-center">
 
                                                {% if friendship.friend.photo %}
                                                    <img src="{{ friendship.friend.get_photo() }}" height="90" />
                                                {% endif %}
+
+                                           </div>
+
+                                           <div class="col-xs-6 col-md-6">
 
                                                <p style="margin-top: 10px;">
                                                    {{ friendship.friend.first_name }} {{ friendship.friend.last_name }}
@@ -29,21 +31,23 @@
                                                    Friends since {{ moment(friendship.timestamp).format("D MMM YYYY") }}
                                                </p>
 
-                                               </td>
-                                               <td width="20%" valign="middle">
+                                           </div>
+
+                                           <div class="col-xs-4 col-md-3 text-right">
+
                                                    <form method="post" action="{{ url_for('main.unlink', id=friendship.friend.id) }}">
-                                                       <button type="submit" class="btn btn-danger delete-button" style="display: inline-block">
+                                                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                       <button type="submit" class="btn btn-link delete-button" style="display: inline-block">
                                                            <i class="fa fa-fw fa-user-times fa-1"></i>
                                                        </button>
                                                    </form>
-                                               </td>
-                                            </tr>
-                                        {% endfor %}
 
-                                        </tbody>
-                                    </table>
+                                           </div>
+                                       </div>
+                                   </div>
                                 </div>
 
+                                {% endfor %}
 
                             {% else %}
 
@@ -55,9 +59,9 @@
 
                     </div>
 
-                    <div class="col-lg-6">
+                    <div class="col-md-4">
 
-                        <h1>Share your diary with a friend</h1>
+                        <h1>Share your food log with a friend</h1>
 
                         <form role="form" method="post">
 

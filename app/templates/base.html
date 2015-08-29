@@ -33,6 +33,7 @@
     <meta property="og:url" content="{{ url_for('main.index', _external=True) }}" />
     <meta property="og:title" content="foodloggr" />
     <meta property="og:description" content="foodloggr - Simple Food Logging" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {% endblock %}
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -120,9 +121,11 @@
                 </li>
                 -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    {% if g.user.friend_requests.count() > 0 %}{{ g.user.friend_requests.count() }}{% endif %}
+                    <i class="fa fa-bell"></i> <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu alert-dropdown">
-                            {% if g.user.friend_requests > 0 %}
                                 {% if g.user.friend_requests.count() > 0 %}
                                     {% for friend_request in g.user.friend_requests %}
                                         <li>
@@ -134,7 +137,6 @@
                                             <a href="#">No alerts</a>
                                         </li>
                                 {% endif %}
-                            {% endif %}
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -165,7 +167,7 @@
                         <a href="{{ url_for('main.home') }}"><i class="fa fa-fw fa-dashboard"></i> News Feed</a>
                     </li>
                     <li{% if request.path=='/link' %} class="active"{% endif %}>
-                        <a href="{{ url_for('main.link') }}"><i class="fa fa-fw fa-user"></i> Friends</a>
+                        <a href="{{ url_for('main.friends') }}"><i class="fa fa-fw fa-user"></i> Friends</a>
                     </li>
                 </ul>
             </div>
