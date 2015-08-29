@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import admin
-from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm
+from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm
 from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
@@ -339,6 +339,30 @@ def edit_profile():
     form.email.data = user.email
 
     return render_template("admin/edit_profile.html",title='Edit Profile',form=form)
+
+@admin.route('/account', methods=['GET','POST'])
+@login_required
+def edit_account():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    user = g.user
+
+    form = AccountForm()
+
+    if form.validate_on_submit():
+
+        user.password = form.password.data.strip()
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Account settings updated.')
+
+        return redirect(url_for('admin.home'))
+
+    return render_template("admin/edit_account.html",title='Edit Account',form=form)
 
 @lm.user_loader
 def load_user(id):

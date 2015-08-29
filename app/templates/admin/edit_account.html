@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">
+                            Change Password
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <form class="form-horizontal" role="form" method="post">
+
+                        {{ form.hidden_tag() }}
+
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label" for="oldpassword">Old Password</label>
+                            <div class="col-sm-4">
+                            {{ form.oldpassword(class="form-control", required="required", autofocus="autofocus") }}
+                            {% for error in form.errors.oldpassword %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label" for="password">New Password</label>
+                            <div class="col-sm-4">
+                            {{ form.password(class="form-control", required="required") }}
+                            {% for error in form.errors.password %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label" for="password2">Confirm New Password</label>
+                            <div class="col-sm-4">
+                            {{ form.password2(class="form-control", required="required") }}
+                            {% for error in form.errors.password2 %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-sm-2 col-sm-offset-2">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                                    Save
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+                <!-- /.row -->
+
+{% endblock %}
