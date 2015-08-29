@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <div class="intro-message">
                         <h1>foodloggr</h1>
-                        <h3>Simple Food Tracking</h3>
+                        <h3>Simple Food Logging</h3>
                         <hr class="intro-divider">
                         <!--
                         <ul class="list-inline intro-social-buttons">
@@ -35,5 +35,30 @@
 
     </div>
     <!-- /.intro-header -->
+
+    <!-- Page Content -->
+
+        <a  name="about"></a>
+    <div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Food Logging. Simple.</h2>
+                    <p class="lead">Don't worry about counting calories. Just write down what you eat. Share your food log with a friend for extra motivation to stay on track.</p>
+                    <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('main.register') }}" role="button">Sign up now &raquo;</a>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/fruit.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
 
 {% endblock %}
