@@ -1,0 +1,328 @@
+{% extends "bootstrap/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    {% block title %}
+    {% if title %}
+    {{title}} - foodloggr
+    {% else %}
+    foodloggr
+    {% endif %}
+    {% endblock %}
+
+    {% block styles %}
+    {{ super() }}
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui/jquery-ui.css') }}">
+
+    {% endblock %}
+
+    {% block metas %}
+    {{ super() }}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Simple Food Logging">
+    <meta name="author" content="Healy Consulting">
+    <meta name="keywords" content="Food,Logging,Simple,foodloggr" />
+    <meta property="og:url" content="{{ url_for('main.index', _external=True) }}" />
+    <meta property="og:title" content="foodloggr" />
+    <meta property="og:description" content="foodloggr - Simple Food Logging" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+{% block body %}
+<body>
+
+    <div id="wrapper">
+
+        {% block navbar %}
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('admin.home') }}">foodloggr</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+                <!--
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <ul class="dropdown-menu message-dropdown">
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-footer">
+                            <a href="#">Read All New Messages</a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    {% if g.user.friend_requests.count() > 0 %}{{ g.user.friend_requests.count() }}{% endif %}
+                    <i class="fa fa-bell"></i> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu alert-dropdown">
+                                {% if g.user.friend_requests.count() > 0 %}
+                                    {% for friend_request in g.user.friend_requests %}
+                                        <li>
+                                            <a href="{{ url_for('admin.accept_link', token=friend_request.user.generate_friend_token(g.user)) }}">{{ friend_request.user.first_name }} {{ friend_request.user.last_name }} <span class="label label-primary">Accept friend request</span></a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                        <li>
+                                            <a href="#">No alerts</a>
+                                        </li>
+                                {% endif %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ g.user.first_name }} {{ g.user.last_name }} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ url_for('admin.edit_profile') }}"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <!--
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        -->
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{{ url_for('admin.logout') }}"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li{% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %} class="active"{% endif %}>
+                        <a href="{{ url_for('admin.home') }}"><i class="fa fa-fw fa-dashboard"></i> News Feed</a>
+                    </li>
+                    <li{% if request.path=='/link' %} class="active"{% endif %}>
+                        <a href="{{ url_for('admin.friends') }}"><i class="fa fa-fw fa-user"></i> Friends</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            {{ title }}
+                        </h1>
+                        <!--
+                        <ol class="breadcrumb">
+                            {% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %}
+                            <li class="active">
+                                <i class="fa fa-dashboard"></i> News Feed
+                            </li>
+                            {% elif request.path=='/link' %}
+                            <li>
+                                <i class="fa fa-dashboard"></i>  <a href="{{ url_for('admin.home') }}">News Feed</a>
+                            </li>
+                            <li class="active">
+                                <i class="fa fa-user"></i> Friends
+                            </li>
+                            {% elif request.path=='/profile/edit' %}
+                            <li>
+                                <i class="fa fa-user"></i>  <a href="{{ url_for('admin.home') }}">News Feed</a>
+                            </li>
+                            <li class="active">
+                                <i class="fa fa-user"></i> Profile
+                            </li>
+                            {% endif %}
+                        </ol>
+                        -->
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                {% include "_flash.html" %}
+
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    {% block scripts %}
+    {{ super() }}
+
+    <script src="{{ url_for('static', filename='jquery-ui/jquery-ui.js') }}"></script>
+
+    <script>
+
+         $(document).ready(function() {
+
+             $("#datepicker-input").datepicker({
+                 dateFormat: "dd-mm-yy",
+                 onSelect: function() {
+                                $("#datepicker-form").submit();
+                           }
+             });
+
+             $("button.delete-button").click(function() {
+                 return confirm('Are you sure?');
+             });
+
+             $("#datepicker-icon").click(function() {
+                 $('#datepicker-input').focus();
+             });
+
+             $("#datepicker-icon").hover(function() {
+                 $(this).css('cursor', 'pointer');
+             });
+
+             var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+             $.ajaxSetup({
+                 beforeSend: function(xhr, settings) {
+                     if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                         xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                     }
+                 }
+             });
+
+             $(".upvote").click(function() {
+
+                 var element = this.id;
+                 entryid = element.split('-')[1];
+
+                 element = 'upvote-' + entryid;
+                 opposite_element = 'downvote-' + entryid;
+
+                 $.ajax({type: "POST",
+                        url: "{{ url_for('admin.vote') }}",
+                        data: JSON.stringify({ upvote: true, entry_id: entryid }),
+                        success: function() {
+                              $("#" + element).toggleClass("btn-success");
+                              $("#" + opposite_element).removeClass("btn-danger");
+                        },
+                        contentType: "application/json"
+                 });
+             });
+
+             $(".downvote").click(function() {
+
+                 var element = this.id;
+                 entryid = element.split('-')[1];
+
+                 element = 'downvote-' + entryid;
+                 opposite_element = 'upvote-' + entryid;
+
+                 $.ajax({type: "POST",
+                        url: "{{ url_for('admin.vote') }}",
+                        data: JSON.stringify({ upvote: false, entry_id: entryid }),
+                        success: function() {
+                              $("#" + element).toggleClass("btn-danger");
+                              $("#" + opposite_element).removeClass("btn-success");
+                        },
+                        contentType: "application/json"
+                 });
+
+             });
+
+             $(".delete-entry").click(function() {
+
+                 var element = this.id;
+                 entryid = element.split('-')[1];
+
+                 element = 'delete-' + entryid;
+
+             });
+
+
+         });
+
+    </script>
+
+    {{ moment.include_moment() }}
+
+    {% endblock %}
+
+{% endblock %}
+</body>
+
+</html>

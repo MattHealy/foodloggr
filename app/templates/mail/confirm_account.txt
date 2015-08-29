@@ -4,7 +4,7 @@ Thank you for registering. To begin using foodloggr, you must first confirm your
 
 To confirm your account, simply copy and paste the below link in to your web browser:
 
-{{ url_for('main.confirm', token=token, _external=True) }}
+{{ url_for('admin.confirm', token=token, _external=True) }}
 
 Regards,
 foodloggr
