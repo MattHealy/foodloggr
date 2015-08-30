@@ -118,8 +118,7 @@ class User(db.Model):
         return Entry.query.join(Friendship, (Friendship.friend_id == Entry.user_id)). \
                  filter(Friendship.user_id == self.id). \
                  filter(Friendship.confirmed == True). \
-                 filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow). \
-                 order_by(Entry.timestamp.desc())
+                 filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow)
 
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)
