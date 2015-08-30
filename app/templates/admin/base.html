@@ -166,10 +166,13 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li{% if "/confirm" in request.path or request.path in ['/home','/unconfirmed'] %} class="active"{% endif %}>
+                    <li{% if "/app/confirm" in request.path or request.path in ['/app/home','/app/unconfirmed'] %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.home') }}"><i class="fa fa-fw fa-dashboard"></i> News Feed</a>
                     </li>
-                    <li{% if request.path=='/link' %} class="active"{% endif %}>
+                    <li{% if request.path=='/app/user/' ~ g.user.id ~ '/feed' %} class="active"{% endif %}>
+                        <a href="{{ url_for('admin.user_feed', user_id = g.user.id) }}"><i class="fa fa-fw fa-dashboard"></i> My Feed</a>
+                    </li>
+                    <li{% if request.path=='/app/friends' %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.friends') }}"><i class="fa fa-fw fa-user"></i> Friends</a>
                     </li>
                 </ul>
