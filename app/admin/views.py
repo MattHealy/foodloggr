@@ -147,7 +147,14 @@ def vote():
 
     data = request.get_json()
     entry_id = data.get('entry_id')
-    upvote = data.get('upvote')
+    vote = data.get('vote')
+
+    upvote = None
+
+    if vote == 'up':
+        upvote = True
+    else:
+        upvote = False
 
     entry = Entry.query.filter(Entry.id == entry_id).first_or_404()
 
@@ -155,10 +162,14 @@ def vote():
     existing_opposite_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote != upvote, Vote.from_userid == g.user.id).first()
 
     if existing_opposite_vote:
-        db.session.delete(existing_opposite_vote)
+        existing_opposite_vote.upvote = upvote
+        db.session.add(existing_opposite_vote)
+        db.session.commit()
+        return '', 201
 
     if existing_vote:
         db.session.delete(existing_vote)
+        db.session.commit()
         return '', 204
     else:
         vote = Vote(entry_id = entry_id, from_userid = g.user.id, upvote = upvote)

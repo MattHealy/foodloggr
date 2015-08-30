@@ -281,7 +281,7 @@
 
                  $.ajax({type: "POST",
                         url: "{{ url_for('admin.vote') }}",
-                        data: JSON.stringify({ upvote: true, entry_id: entryid }),
+                        data: JSON.stringify({ vote: "up", entry_id: entryid }),
                         success: function() {
                               $("#" + element).toggleClass("btn-success");
                               $("#" + opposite_element).removeClass("btn-danger");
@@ -300,7 +300,7 @@
 
                  $.ajax({type: "POST",
                         url: "{{ url_for('admin.vote') }}",
-                        data: JSON.stringify({ upvote: false, entry_id: entryid }),
+                        data: JSON.stringify({ vote: "down", entry_id: entryid }),
                         success: function() {
                               $("#" + element).toggleClass("btn-danger");
                               $("#" + opposite_element).removeClass("btn-success");
