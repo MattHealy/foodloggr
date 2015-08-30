@@ -18,10 +18,10 @@
 
                                                {{ entry.body }}
 
-                                               {% if showtimestamp %}
+                                               {% if show_entry_date %}
                                                <p>
                                                <small>
-                                                   {{ moment(entry.timestamp).format("D MMM") }}
+                                                   {{ moment(entry.entry_date).format("D MMM") }}
                                                </small>
                                                </p>
                                                {% endif %}

@@ -1,10 +1,12 @@
 {% if entries %}
-    {% if entries.count() > 0 %}
+    {% if entries.total > 0 %}
         <hr />
         <div class="container-fluid">
-            {% for entry in entries %}
+            {% include "admin/_entry_pagination.html" %}
+            {% for entry in entries.items %}
                 {% include "admin/_newsfeeditem.html" %}
             {% endfor %}
+            {% include "admin/_entry_pagination.html" %}
         </div>
     {% endif %}
 {% endif %}

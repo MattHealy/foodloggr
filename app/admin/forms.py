@@ -11,6 +11,7 @@ class EntryForm(Form):
     submit = SubmitField('Add')
 
 class RemoveEntryForm(Form):
+    redirect = HiddenField('redirect')
     entry_date = HiddenField('entry_date')
 
 class LinkForm(Form):

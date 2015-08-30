@@ -76,7 +76,11 @@ def home():
     my_entries = g.user.entries.filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow)
     friends_entries = g.user.friends_entries(today,tomorrow)
 
-    entries = my_entries.union(friends_entries).order_by(Entry.timestamp.desc())
+    page = request.args.get('page', 1, type=int)
+
+    entries = my_entries.union(friends_entries).order_by(Entry.timestamp.desc()). \
+                  paginate(page, current_app.config['ENTRIES_PER_PAGE'], False)
+
 
     form.entry_date.data = placeholder
     removeform.entry_date.data = placeholder
@@ -106,13 +110,16 @@ def user_feed(user_id):
                  filter(Friendship.confirmed == True).first_or_404()
 
     tomorrow = datetime.today() + timedelta(days=1)
-    entries = user.entries.filter(Entry.entry_date < tomorrow).order_by(Entry.timestamp.desc()).limit(50)
+
+    page = request.args.get('page', 1, type=int)
+
+    entries = user.entries.filter(Entry.entry_date < tomorrow).order_by(Entry.timestamp.desc()).paginate(page, current_app.config['ENTRIES_PER_PAGE'], False)
 
     removeform = RemoveEntryForm()
+    removeform.redirect.data = url_for('admin.user_feed', page = page, user_id = user.id)
 
-    session['next_url'] = url_for('admin.user_feed', user_id = user.id)
-
-    return render_template("admin/userfeed.html", entries=entries, user=user, showtimestamp=True, removeform=removeform)
+    return render_template("admin/userfeed.html", entries=entries, user=user, show_entry_date=True, 
+                removeform=removeform)
 
 @admin.route('/entry/<int:id>/remove', methods=['POST'])
 @login_required
@@ -126,9 +133,8 @@ def remove_entry(id):
         db.session.delete(entry)
         db.session.commit()
 
-        next_url = session.pop('next_url')
-        if next_url:
-            return redirect(next_url)
+        if form.redirect.data:
+            return redirect(form.redirect.data)
         else:
             return redirect(url_for('admin.home', date = form.entry_date.data.strip()))
 
