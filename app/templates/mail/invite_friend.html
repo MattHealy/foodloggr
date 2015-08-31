@@ -1,6 +1,8 @@
 Hello,<br /><br />
 
-Your friend {{ user.first_name }} {{ user.last_name }} wants to share their food diary with you!<br /><br />
+Your friend {{ user.first_name }} {{ user.last_name }} wants to share their food diary with you using <a href="{{ url_for('main.index', _external=True) }}">foodloggr</a>!<br /><br />
+
+<a href="{{ url_for('main.index', _external=True) }}">foodloggr</a> is a simple food logging web app where you don't need to worry about counting calories. Just write down what you eat, and share your food diary with a friend for extra motivation to stay on track.
 
 To get started with foodloggr, <a href="{{ url_for('main.register', _external=True) }}">click here</a> or copy and paste the below link to your web browser:<br /><br />
 
