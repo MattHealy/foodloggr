@@ -28,6 +28,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean)
     photo = db.Column(db.String(128))
+    timezone = db.Column(db.String(64))
 
     entries = db.relationship('Entry', backref='user', lazy='dynamic', cascade="all, delete")
 

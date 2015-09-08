@@ -24,6 +24,10 @@ def home():
     if not g.user.is_confirmed():
         return redirect(url_for('admin.unconfirmed'))
 
+    if not g.user.timezone:
+        flash('Please set your timezone before you get started')
+        return redirect(url_for('admin.edit_profile'))
+
     form = EntryForm()
     removeform = RemoveEntryForm()
 
@@ -99,6 +103,10 @@ def user_feed(user_id):
 
     if not g.user.is_confirmed():
         return redirect(url_for('admin.unconfirmed'))
+
+    if not g.user.timezone:
+        flash('Please set your timezone before you get started')
+        return redirect(url_for('admin.edit_profile'))
 
     user = None
     if user_id == g.user.id:
@@ -368,6 +376,7 @@ def edit_profile():
         user.first_name = form.first_name.data.strip()
         user.last_name = form.last_name.data.strip()
         user.email = form.email.data.strip()
+        user.timezone = form.timezone.data.strip()
 
         if form.photo.data.filename:
             output = local_upload(form.photo)
@@ -383,6 +392,7 @@ def edit_profile():
     form.first_name.data = user.first_name
     form.last_name.data = user.last_name
     form.email.data = user.email
+    form.timezone.data = user.timezone
 
     return render_template("admin/edit_profile.html",title='Edit Profile',form=form)
 
