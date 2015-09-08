@@ -8,6 +8,7 @@ from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from .tools import local_upload
+import pytz
 
 @admin.before_request
 def before_request():
@@ -38,7 +39,7 @@ def home():
         if form.entry_date.data.strip():
             entry_date = datetime.strptime(form.entry_date.data.strip(), "%d-%m-%Y").date()
         else:
-            entry_date = date.today()
+            entry_date = get_today_timezone_aware()
 
         entry = Entry(body=form.body.data.strip(), entry_date=entry_date, timestamp=datetime.utcnow(), user_id=g.user.id)
 
@@ -53,7 +54,7 @@ def home():
     if diary_date:
         try:
             today = datetime.strptime(diary_date, "%d-%m-%Y").date()
-            realtoday = date.today()
+            realtoday = get_today_timezone_aware()
             realtomorrow = realtoday + timedelta(days=1)
             realyesterday = realtoday - timedelta(days=1)
             datestring = today.strftime("%e %b")
@@ -67,11 +68,11 @@ def home():
 
             placeholder = today.strftime("%d-%m-%Y")
         except:
-            today = date.today()
+            today = get_today_timezone_aware()
             datestring = 'Today'
             placeholder = today.strftime("%d-%m-%Y")
     else:
-        today = date.today()
+        today = get_today_timezone_aware()
         datestring = 'Today'
         placeholder = today.strftime("%d-%m-%Y")
 
@@ -117,7 +118,7 @@ def user_feed(user_id):
                  filter(User.id == user_id). \
                  filter(Friendship.confirmed == True).first_or_404()
 
-    tomorrow = datetime.today() + timedelta(days=1)
+    tomorrow = get_today_timezone_aware() + timedelta(days=1)
 
     page = request.args.get('page', 1, type=int)
 
@@ -423,3 +424,6 @@ def edit_account():
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+def get_today_timezone_aware():
+    return datetime.now(pytz.timezone(g.user.timezone)).date()
