@@ -1,3 +1,7 @@
+# Adapted from https://github.com/doobeh/Flask-S3-Uploader
+# Improved to store the data on the local server and process
+# the upload via a celery task queue
+
 from uuid import uuid4
 import boto
 import os.path
