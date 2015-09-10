@@ -39,7 +39,7 @@ def register():
             user.password = form.password.data.strip()
             user.is_confirmed = False
         else:
-            user = User(email=form.email.data.strip(), first_name=form.first_name.data.strip(), last_name=form.last_name.data.strip(), first_login=datetime.utcnow(), password=form.password.data.strip(), is_confirmed=False)
+            user = User(score=0, email=form.email.data.strip(), first_name=form.first_name.data.strip(), last_name=form.last_name.data.strip(), first_login=datetime.utcnow(), password=form.password.data.strip(), is_confirmed=False)
 
         user.last_seen = datetime.utcnow()
         user.last_login = datetime.utcnow()

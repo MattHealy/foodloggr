@@ -338,7 +338,7 @@ def friends():
         else:
 
             # Add a "Ghost" account for this user
-            friend = User(email=form.email.data.strip(), is_confirmed=False)
+            friend = User(email=form.email.data.strip(), is_confirmed=False, score=0)
             db.session.add(friend)
             db.session.commit()
 
