@@ -167,21 +167,38 @@ def vote():
 
     entry = Entry.query.filter(Entry.id == entry_id).first_or_404()
 
+    user = entry.user
+
     existing_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote == upvote, Vote.from_userid == g.user.id).first()
     existing_opposite_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote != upvote, Vote.from_userid == g.user.id).first()
 
     if existing_opposite_vote:
         existing_opposite_vote.upvote = upvote
+        if upvote:
+            user.score = user.score + 2
+        else:
+            user.score = user.score - 2
         db.session.add(existing_opposite_vote)
+        db.session.add(user)
         db.session.commit()
         return '', 201
 
     if existing_vote:
+        if upvote:
+            user.score = user.score - 1
+        else:
+            user.score = user.score + 1
+        db.session.add(user)
         db.session.delete(existing_vote)
         db.session.commit()
         return '', 204
     else:
         vote = Vote(entry_id = entry_id, from_userid = g.user.id, upvote = upvote)
+        if upvote:
+            user.score = user.score + 1
+        else:
+            user.score = user.score - 1
+        db.session.add(user)
         db.session.add(vote)
         db.session.commit()
         return '', 201
