@@ -7,6 +7,7 @@ from .forms import LoginForm, RegisterForm, ResetForm, ForgotForm
 from .. import db, lm
 from ..models import User
 from ..email import send_email
+from .oauth import OAuthSignIn
 
 @main.before_request
 def before_request():
@@ -37,9 +38,9 @@ def register():
             user.last_name = form.last_name.data.strip()
             user.first_login = datetime.utcnow()
             user.password = form.password.data.strip()
-            user.is_confirmed = False
+            user.confirmed = False
         else:
-            user = User(score=0, email=form.email.data.strip(), first_name=form.first_name.data.strip(), last_name=form.last_name.data.strip(), first_login=datetime.utcnow(), password=form.password.data.strip(), is_confirmed=False)
+            user = User(score=0, email=form.email.data.strip(), first_name=form.first_name.data.strip(), last_name=form.last_name.data.strip(), first_login=datetime.utcnow(), password=form.password.data.strip(), confirmed=False)
 
         user.last_seen = datetime.utcnow()
         user.last_login = datetime.utcnow()
@@ -69,6 +70,47 @@ def login():
         flash('Invalid username or password.')
 
     return render_template('login.html', title='Sign In', form=form)
+
+@main.route('/authorize/<provider>')
+def oauth_authorize(provider):
+    if not current_user.is_anonymous():
+        return redirect(url_for('main.login'))
+    oauth = OAuthSignIn.get_provider(provider)
+    return oauth.authorize()
+
+@main.route('/callback/<provider>')
+def oauth_callback(provider):
+
+    if not current_user.is_anonymous():
+        return redirect(url_for('main.login'))
+    oauth = OAuthSignIn.get_provider(provider)
+    social_id, email, first_name, last_name = oauth.callback()
+
+    if social_id is None:
+        flash('Authentication failed.')
+        return redirect(url_for('main.login'))
+
+    user = User.query.filter_by(social_id=social_id).first()
+
+    if not user:
+        user = User(social_id=social_id, score=0, email=email, first_name=first_name, last_name=last_name, first_login=datetime.utcnow(), confirmed=True)
+        send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
+        db.session.add(user)
+
+    user.last_seen = datetime.utcnow()
+    user.last_login = datetime.utcnow()
+
+    db.session.commit()
+
+    login_user(user, True)
+
+    next_url = None
+    if session.get('next_url'):
+        next_url = session.pop('next_url')
+    else:
+        next_url = url_for('admin.home')
+
+    return redirect(next_url)
 
 @main.route('/forgot', methods=['GET','POST'])
 def forgot():

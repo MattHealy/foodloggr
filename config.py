@@ -16,6 +16,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
+    PREFERRED_URL_SCHEME = 'http'
 
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
 
@@ -28,6 +29,21 @@ class Config:
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
     ENTRIES_PER_PAGE = 30
+
+    OAUTH_CREDENTIALS = {
+        'facebook': {
+           'id': '1494241210900163',
+           'secret': os.environ.get('OAUTH_FACEBOOK_SECRET')
+        },
+        'google': {
+           'id': '',
+           'secret': os.environ.get('OAUTH_GOOGLE_SECRET')
+        },
+        'twitter': {
+           'id': '',
+           'secret': os.environ.get('OAUTH_TWITTER_SECRET')
+        }
+    }
 
     @staticmethod
     def init_app(app):

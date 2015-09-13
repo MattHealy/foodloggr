@@ -10,7 +10,11 @@
 
         {% include "_flash.html" %}
 
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">Please sign in:</h2>
+
+        <p><a href="{{ url_for('main.oauth_authorize', provider='facebook') }}" class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook"></i> Sign in with Facebook</a></p>
+        <h3 class="form-signin-heading">or sign in manually:</h3>
+
         <label for="inputEmail" class="sr-only">Email address</label>
         {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.email %}
@@ -28,6 +32,7 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <a href="{{ url_for('main.forgot') }}">Forgot your password?</a>
+        <br />
         <br />
         <h3>Don't have an account?</h3>
         <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('main.register') }}" role="button">Sign up now &raquo;</a>

@@ -138,7 +138,7 @@ class User(db.Model):
 
     @staticmethod
     def on_changed_email(target, value, oldvalue, initiator):
-        if value != oldvalue and target.confirmed:
+        if value != oldvalue and target.confirmed and target.social_id is None:
             send_email(value, 'Confirm Account','mail/confirm_account', user=target, token=target.generate_token())
             flash("A confirmation email has been sent to " + value)
             target.confirmed = False
