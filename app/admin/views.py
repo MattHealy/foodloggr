@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, g, current_app, session, abort, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, g, current_app, session, abort, send_from_directory, Response
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
@@ -9,6 +9,7 @@ from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from .tools import local_upload
 import pytz
+import json
 
 @admin.before_request
 def before_request():
@@ -437,6 +438,49 @@ def edit_account():
         return redirect(url_for('admin.home'))
 
     return render_template("admin/edit_account.html",title='Edit Account',form=form)
+
+@admin.route('/calendar', methods=['GET'])
+@login_required
+def calendar():
+    return render_template("admin/calendar.html")
+
+@admin.route('/calendarfeed', methods=['GET'])
+@login_required
+def calendarfeed():
+
+    entries = g.user.entries
+
+    start = request.args.get('start')
+    end = request.args.get('end')
+
+    if start:
+        entries = entries.filter(Entry.entry_date >= start)
+    if end:
+        entries = entries.filter(Entry.entry_date <= end)
+
+    counter = {}
+    entrylist = []
+
+    for entry in entries:
+
+        if not counter.get(entry.entry_date):
+            counter[entry.entry_date] = 0
+
+        if counter[entry.entry_date] >= 5:
+            continue
+
+        entryobject = {}
+        entryobject['id'] = entry.id
+        entryobject['title'] = entry.body
+        entryobject['allDay'] = True
+        entryobject['start'] = entry.entry_date.strftime('%Y-%m-%d')
+        entryobject['end'] = entry.entry_date.strftime('%Y-%m-%d')
+
+        counter[entry.entry_date] = counter[entry.entry_date] + 1
+
+        entrylist.append(entryobject)
+
+    return Response(json.dumps(entrylist),  mimetype='application/json')
 
 @lm.user_loader
 def load_user(id):
