@@ -53,12 +53,11 @@
 
                                 <p>You haven't added any friends yet!</p>
                                 {% if g.user.social_id %}
-                                <p>
-                                <a href="{{ facebook_invite_url }}" class="btn btn-lg btn-primary" role="button">Invite friends via Facebook</a>
-                                </p>
+                                    <a href="{{ url_for('admin.facebook_friends') }}" class="btn btn-lg btn-primary" role="button">Connect with friends via Facebook</a>
                                 {% endif %}
 
                             {% endif %}
+
 
                         {% endif %}
 
@@ -72,6 +71,10 @@
 
                             {{ form.hidden_tag() }}
 
+                            {% if g.user.social_id %}
+                            <a href="{{ facebook_invite_url }}" class="btn btn-lg btn-primary" role="button">Invite friends via Facebook</a>
+                            <h3>or via email</h3>
+                            {% endif %}
                             <div class="form-group">
                                 {{ form.email(placeholder="Enter your friend's email address", class="form-control", required="required") }}
                                 {% for error in form.errors.email %}
@@ -79,7 +82,7 @@
                                 {% endfor %}
 
                                 <br />
-                                <button class="btn btn-lg btn-success" type="submit">Send invitation</button>
+                                <button class="btn btn-lg btn-success" type="submit">Send Invitation</button>
                             </div>
 
                         </form>

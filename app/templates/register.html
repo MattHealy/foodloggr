@@ -12,6 +12,10 @@
 
         <h2 class="form-signin-heading">Register</h2>
 
+        <p><a href="{{ url_for('main.oauth_authorize', provider='facebook') }}" class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook"></i> Register with Facebook</a></p>
+
+        <h3 class="form-signin-heading">or register manually:</h3>
+
         <label for="inputFirstName" class="sr-only">First name</label>
         {{ form.first_name(placeholder="First name", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.first_name %}

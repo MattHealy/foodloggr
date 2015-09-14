@@ -8,8 +8,10 @@ from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
 from ..tools import local_upload
+from ..oauth import OAuthSignIn
 import pytz
 import json
+import requests
 
 @admin.before_request
 def before_request():
@@ -359,6 +361,68 @@ def friends():
          '&redirect_uri=' + url_for('admin.friends', _external=True)
 
     return render_template("admin/friends.html", form=form, title='Friends', facebook_invite_url=facebook_invite_url)
+
+@admin.route('/facebookfriends', methods=['GET'])
+@login_required
+def facebook_friends():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    if not g.user.social_id:
+        return redirect(url_for('admin.home'))
+
+    facebook_access_token = session.get('facebook_access_token')
+    facebook_access_token = 'CAAVPASSVnsMBAIzqeGNloyxEeituELAAGHSTg4WxELUYVufzlxuOGl0CQ650B5AHYK8I8oZCcjvfa9Vc0xpHSJ9UhT3Gk96rBk2q4ojV7KQ0ZAZAL1U0daOsYe3ixaQqaolZAsKUR1rhzg5whIJ69zkzZB2XyzKo0H66KoTcPKbsDJ3GTET1gkeDQoiBHnwhdodzTgzZCZAAzWFNTzJGlO6'
+
+    if not facebook_access_token:
+        flash("Couldn't get your facebook friends list")
+        return redirect(url_for('admin.friends'))
+
+    r = requests.get('https://graph.facebook.com/me/friends?access_token=' + str(facebook_access_token) + \
+                     '&fields=id,name,picture')
+    fbfriends = r.json()
+    fbfriends = fbfriends.get('data')
+
+    #facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+    #     '&link=' + url_for('main.index', _external=True) + \
+    #     '&redirect_uri=' + url_for('admin.friends', _external=True)
+
+    facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+         '&link=http://www.foodloggr.com' + \
+         '&redirect_uri=' + url_for('admin.friends', _external=True)
+
+    return render_template("admin/facebook_friends.html", title='Facebook Friends', fbfriends = fbfriends, \
+              facebook_invite_url = facebook_invite_url)
+
+@admin.route('/connect_facebook', methods=['POST'])
+@login_required
+def connect_facebook():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    data = request.get_json()
+    social_id = 'facebook$' + str(data.get('social_id'))
+
+    friend = User.query.filter_by(social_id = social_id).first()
+
+    if friend:
+        if friend.id == g.user.id:
+            return '', 400
+        elif g.user.is_linked(friend):
+            return '', 400
+        else:
+            friendship = Friendship.query.filter_by(user_id = g.user.id, friend_id = friend.id).first()
+            if not friendship:
+                friendship = Friendship(user_id = g.user.id, friend_id = friend.id, confirmed=False)
+                db.session.add(friendship)
+                db.session.commit()
+            token = g.user.generate_friend_token(friend)
+            send_email(friend.email, g.user.first_name + ' wants to share their food diary with you!','mail/link_friend', user=g.user, friend=friend, token=token)
+            return '', 201
+    else:
+        return '', 400
 
 @admin.route('/confirmation_email', methods=['GET'])
 @login_required

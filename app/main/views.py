@@ -10,7 +10,7 @@ from .forms import LoginForm, RegisterForm, ResetForm, ForgotForm
 from .. import db, lm
 from ..models import User
 from ..email import send_email
-from .oauth import OAuthSignIn
+from ..oauth import OAuthSignIn
 from ..tools import s3_upload
 
 @main.before_request
@@ -64,6 +64,9 @@ def login():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('admin.home'))
 
+    if request.args.get('next'):
+        session['next_url'] = request.args.get('next')
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -88,7 +91,11 @@ def oauth_callback(provider):
     if not current_user.is_anonymous():
         return redirect(url_for('main.login'))
     oauth = OAuthSignIn.get_provider(provider)
-    social_id, email, first_name, last_name, photo_url = oauth.callback()
+    try:
+        social_id, email, first_name, last_name, photo_url, facebook_access_token = oauth.callback()
+    except:
+        flash('Authentication failed.')
+        return redirect(url_for('main.login'))
 
     if social_id is None or email is None:
         flash('Authentication failed.')
@@ -142,6 +149,8 @@ def oauth_callback(provider):
         next_url = session.pop('next_url')
     else:
         next_url = url_for('admin.home')
+
+    session['facebook_access_token'] = facebook_access_token
 
     return redirect(next_url)
 

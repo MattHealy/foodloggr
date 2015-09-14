@@ -334,6 +334,34 @@
                  events: '{{ url_for('admin.calendarfeed') }}'
              });
 
+             $(".facebook-connect").click(function() {
+
+                 var element = this.id;
+                 social_id = element.split('-')[1];
+
+                 element = 'facebook-' + social_id;
+
+                 $.ajax({type: "POST",
+                        url: "{{ url_for('admin.connect_facebook') }}",
+                        data: JSON.stringify({ social_id: social_id }),
+                        success: function() {
+                              $("#" + element).removeClass("btn-primary");
+                              $("#" + element).toggleClass("btn-success");
+                              $("#" + element).prop('disabled', true);
+                              $("#" + element).html('Friend request sent!');
+                        },
+                        error: function() {
+                              $("#" + element).removeClass("btn-primary");
+                              $("#" + element).toggleClass("btn-danger");
+                              $("#" + element).prop('disabled', true);
+                              $("#" + element).html('Sorry, an error occurred.');
+                        },
+                        contentType: "application/json"
+                 });
+
+             });
+
+
          });
 
     </script>

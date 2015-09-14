@@ -116,6 +116,13 @@ class User(db.Model):
     def is_linked(self, friend):
         return Friendship.query.filter_by(user_id = self.id, friend_id = friend.id, confirmed = True).count() > 0
 
+    def facebook_request_sent(self, friend_social_id):
+        friend_social_id = 'facebook$' + str(friend_social_id)
+        friend = User.query.filter_by(social_id = friend_social_id).first()
+        if not friend:
+            return False
+        return Friendship.query.filter_by(user_id = self.id, friend_id = friend.id).count() > 0
+
     def friends_entries(self, today, tomorrow):
         return Entry.query.join(Friendship, (Friendship.friend_id == Entry.user_id)). \
                  filter(Friendship.user_id == self.id). \

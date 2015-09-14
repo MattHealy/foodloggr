@@ -44,7 +44,7 @@ class FacebookSignIn(OAuthSignIn):
         )
     def authorize(self):
         return redirect(self.service.get_authorize_url(
-            scope='email',
+            scope='email,user_friends',
             response_type='code',
             redirect_uri=self.get_callback_url())
         )
@@ -65,7 +65,8 @@ class FacebookSignIn(OAuthSignIn):
             me.get('email'),
             me.get('first_name'),
             me.get('last_name'),
-            photo_url
+            photo_url,
+            oauth_session.access_token
         )
 
 class GoogleSignIn(OAuthSignIn):
