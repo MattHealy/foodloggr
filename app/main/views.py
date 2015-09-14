@@ -109,10 +109,20 @@ def oauth_callback(provider):
             db.session.add(user)
     else:
 
-        user = User(social_id=social_id, score=0, email=email, first_name=first_name, last_name=last_name, first_login=datetime.utcnow(), confirmed=True)
+        user = User.query.filter_by(email=email, social_id = None).first()
+
+        if user:
+            user.social_id = social_id
+            user.first_name = first_name
+            user.last_name = last_name
+            user.confirmed = True
+        else:
+            user = User(social_id=social_id, score=0, email=email, first_name=first_name, \
+                        last_name=last_name, first_login=datetime.utcnow(), confirmed=True)
+
         db.session.add(user)
 
-        if photo_url:
+        if photo_url and user.photo is None:
 
             r = requests.get(photo_url)
 
