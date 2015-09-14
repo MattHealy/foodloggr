@@ -50,7 +50,7 @@ class FacebookSignIn(OAuthSignIn):
         )
     def callback(self):
         if 'code' not in request.args:
-            return None, None, None
+            return None, None, None, None
         oauth_session = self.service.get_auth_session(
             data={'code': request.args['code'],
                   'grant_type': 'authorization_code',
@@ -58,11 +58,14 @@ class FacebookSignIn(OAuthSignIn):
         )
         me = oauth_session.get('me?fields=email,first_name,last_name').json()
 
+        photo_url = 'http://graph.facebook.com/' + str(me['id']) + '/picture?type=large'
+
         return (
             'facebook$' + me['id'],
             me.get('email'),
             me.get('first_name'),
-            me.get('last_name')
+            me.get('last_name'),
+            photo_url
         )
 
 class GoogleSignIn(OAuthSignIn):
@@ -99,7 +102,8 @@ class GoogleSignIn(OAuthSignIn):
             'google$' + me['id'],
             me.get('email'),
             me.get('given_name'),
-            me.get('family_name')
+            me.get('family_name'),
+            None
         )
 
 class TwitterSignIn(OAuthSignIn):
@@ -123,7 +127,7 @@ class TwitterSignIn(OAuthSignIn):
     def callback(self):
         request_token = session.pop('request_token')
         if 'oauth_verifier' not in request.args:
-            return None, None, None
+            return None, None, None, None
         oauth_session = self.service.get_auth_session(
             request_token[0],
             request_token[1],
@@ -142,4 +146,4 @@ class TwitterSignIn(OAuthSignIn):
         else:
             first_name = name
 
-        return social_id, None, first_name, last_name  # Twitter does not provide email
+        return social_id, None, first_name, last_name, None # Twitter does not provide email

@@ -52,6 +52,11 @@
                             {% else %}
 
                                 <p>You haven't added any friends yet!</p>
+                                {% if g.user.social_id %}
+                                <p>
+                                <a href="{{ facebook_invite_url }}" class="btn btn-lg btn-primary" role="button">Invite friends via Facebook</a>
+                                </p>
+                                {% endif %}
 
                             {% endif %}
 

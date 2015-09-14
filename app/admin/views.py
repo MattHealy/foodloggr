@@ -7,7 +7,7 @@ from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountFor
 from .. import db, lm
 from ..models import User, Entry, Friendship, Vote
 from ..email import send_email
-from .tools import local_upload
+from ..tools import local_upload
 import pytz
 import json
 
@@ -86,7 +86,6 @@ def home():
 
     entries = my_entries.union(friends_entries).order_by(Entry.timestamp.desc()). \
                   paginate(page, current_app.config['ENTRIES_PER_PAGE'], False)
-
 
     form.entry_date.data = placeholder
     removeform.entry_date.data = placeholder
@@ -351,7 +350,15 @@ def friends():
             flash('A friend request has been sent to ' + form.email.data.strip())
         return redirect(url_for('admin.friends'))
 
-    return render_template("admin/friends.html", form=form, title='Friends')
+    #facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+    #     '&link=' + url_for('main.index', _external=True) + \
+    #     '&redirect_uri=' + url_for('admin.friends', _external=True)
+
+    facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+         '&link=http://www.foodloggr.com' + \
+         '&redirect_uri=' + url_for('admin.friends', _external=True)
+
+    return render_template("admin/friends.html", form=form, title='Friends', facebook_invite_url=facebook_invite_url)
 
 @admin.route('/confirmation_email', methods=['GET'])
 @login_required
@@ -394,7 +401,8 @@ def edit_profile():
 
         user.first_name = form.first_name.data.strip()
         user.last_name = form.last_name.data.strip()
-        user.email = form.email.data.strip()
+        if not user.social_id:
+            user.email = form.email.data.strip()
         user.timezone = form.timezone.data.strip()
 
         if form.photo.data.filename:
@@ -421,6 +429,9 @@ def edit_account():
 
     if not g.user.is_confirmed():
         return redirect(url_for('admin.unconfirmed'))
+
+    if g.user.social_id:
+        return redirect(url_for('admin.home'))
 
     user = g.user
 

@@ -7,7 +7,7 @@ import boto
 import os.path
 from flask import current_app as app
 from werkzeug.utils import secure_filename
-from .. import celery
+from . import celery
 
 def local_upload(source_file):
     source_filename = secure_filename(source_file.data.filename)

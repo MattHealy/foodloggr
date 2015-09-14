@@ -2,12 +2,16 @@ from flask import render_template, flash, redirect, url_for, request, g, current
 from flask.ext.login import login_user, current_user
 from datetime import datetime
 from itsdangerous import JSONWebSignatureSerializer
+from uuid import uuid4
+import requests
+import os.path
 from . import main
 from .forms import LoginForm, RegisterForm, ResetForm, ForgotForm
 from .. import db, lm
 from ..models import User
 from ..email import send_email
 from .oauth import OAuthSignIn
+from ..tools import s3_upload
 
 @main.before_request
 def before_request():
@@ -84,18 +88,47 @@ def oauth_callback(provider):
     if not current_user.is_anonymous():
         return redirect(url_for('main.login'))
     oauth = OAuthSignIn.get_provider(provider)
-    social_id, email, first_name, last_name = oauth.callback()
+    social_id, email, first_name, last_name, photo_url = oauth.callback()
 
-    if social_id is None:
+    if social_id is None or email is None:
         flash('Authentication failed.')
         return redirect(url_for('main.login'))
 
     user = User.query.filter_by(social_id=social_id).first()
 
-    if not user:
+    if user:
+        if user.email != email:
+            user.email = email
+            db.session.add(user)
+    else:
+
         user = User(social_id=social_id, score=0, email=email, first_name=first_name, last_name=last_name, first_login=datetime.utcnow(), confirmed=True)
-        send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
         db.session.add(user)
+
+        if photo_url:
+
+            r = requests.get(photo_url)
+
+            source_extension = None
+
+            headers = r.headers
+            contenttype = headers.get('content-type')
+
+            if contenttype == 'image/png':
+                source_extension = '.png'
+            elif contenttype == 'image/gif':
+                source_extension = '.gif'
+            else:
+                source_extension = '.jpg'
+
+            destination_filename = uuid4().hex + source_extension
+            with open(os.path.join(current_app.config['UPLOAD_FOLDER'], destination_filename), 'wb') as f:
+                f.write(r.content)
+                s3_upload.delay(destination_filename)
+                user.photo = destination_filename
+                db.session.add(user)
+
+        send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
 
     user.last_seen = datetime.utcnow()
     user.last_login = datetime.utcnow()
