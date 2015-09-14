@@ -52,11 +52,12 @@
                             {% else %}
 
                                 <p>You haven't added any friends yet!</p>
+
+                            {% endif %}
+
                                 {% if g.user.social_id %}
                                     <a href="{{ url_for('admin.facebook_friends') }}" class="btn btn-lg btn-primary" role="button">Connect with friends via Facebook</a>
                                 {% endif %}
-
-                            {% endif %}
 
 
                         {% endif %}

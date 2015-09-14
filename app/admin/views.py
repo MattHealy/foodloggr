@@ -373,7 +373,6 @@ def facebook_friends():
         return redirect(url_for('admin.home'))
 
     facebook_access_token = session.get('facebook_access_token')
-    facebook_access_token = 'CAAVPASSVnsMBAIzqeGNloyxEeituELAAGHSTg4WxELUYVufzlxuOGl0CQ650B5AHYK8I8oZCcjvfa9Vc0xpHSJ9UhT3Gk96rBk2q4ojV7KQ0ZAZAL1U0daOsYe3ixaQqaolZAsKUR1rhzg5whIJ69zkzZB2XyzKo0H66KoTcPKbsDJ3GTET1gkeDQoiBHnwhdodzTgzZCZAAzWFNTzJGlO6'
 
     if not facebook_access_token:
         flash("Couldn't get your facebook friends list")
@@ -381,15 +380,16 @@ def facebook_friends():
 
     r = requests.get('https://graph.facebook.com/me/friends?access_token=' + str(facebook_access_token) + \
                      '&fields=id,name,picture')
+
     fbfriends = r.json()
+
+    if fbfriends.get('error'):
+        session['next_url'] = url_for('admin.facebook_friends')
+        return redirect(url_for('main.oauth_authorize', provider='facebook'))
     fbfriends = fbfriends.get('data')
 
-    #facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
-    #     '&link=' + url_for('main.index', _external=True) + \
-    #     '&redirect_uri=' + url_for('admin.friends', _external=True)
-
     facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
-         '&link=http://www.foodloggr.com' + \
+         '&link=' + url_for('main.index', _external=True) + \
          '&redirect_uri=' + url_for('admin.friends', _external=True)
 
     return render_template("admin/facebook_friends.html", title='Facebook Friends', fbfriends = fbfriends, \

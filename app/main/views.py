@@ -135,7 +135,7 @@ def oauth_callback(provider):
                 user.photo = destination_filename
                 db.session.add(user)
 
-        send_email(current_app.config['ADMIN_EMAIL'], 'New User','mail/new_user', user=user)
+        send_email(current_app.config['ADMIN_EMAIL'], 'New User (Facebook)','mail/new_user', user=user)
 
     user.last_seen = datetime.utcnow()
     user.last_login = datetime.utcnow()
