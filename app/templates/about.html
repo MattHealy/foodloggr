@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="content-section-a" style="padding-top: 80px;">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Stay on track</h2>
+                    <p class="lead">
+                    By keeping a diary of what you eat, you can keep yourself on track with healthy eating habits. <strong>foodloggr</strong> makes it easy to maintain your food diary by not requiring you to enter calories for everything.
+                    </p>
+                    <p class="lead">
+                    <strong>foodloggr</strong> keeps you accountable to yourself!
+                    </p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/nuts.jpeg') }}" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+
+
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">How does it work?</h2>
+                    <p class="lead">
+                    It's so simple - just enter the food you eat each day. No searching for foods in databases, no calculating calories.
+                    </p>
+                    <p class="lead">
+                    You can also add your friends so you can view each other's food logs, giving you both further motivation to stay on track. Your friends can give you a <i class="fa fa-fw fa-thumbs-up"></i> or <i class="fa fa-fw fa-thumbs-down"></i> for each entry. See who can get the highest food score!
+                    </p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/foodloggr-screenshot-1.png') }}" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+    <div class="content-section-a" style="padding-top: 80px;">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Testimonials</h2>
+                    <p class="lead">
+Foodloggr is a stripped back and easy to use food logging service to keep track of what you eat, and motivate your friends to stay healthy. No messing around with finding brands or adding portion sizes, just be honest with yourself and track what you want. <br /><br /> - <small>Simon O.</small>
+                    </p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/saladbowl.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+{% endblock %}

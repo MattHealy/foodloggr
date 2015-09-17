@@ -25,6 +25,14 @@ def before_request():
 def index():
     return render_template("index.html")
 
+@main.route('/about', methods=['GET'])
+def about():
+    return render_template("about.html")
+
+@main.route('/terms', methods=['GET'])
+def terms():
+    return render_template("terms.html")
+
 @main.route('/register', methods=['GET','POST'])
 def register():
 
