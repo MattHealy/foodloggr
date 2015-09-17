@@ -2,7 +2,7 @@
                                    <div class="panel-heading">
                                        <div class="row">
 
-                                           <div class="col-xs-3 col-md-2 text-center">
+                                           <div class="col-xs-4 col-md-2 text-center">
 
                                                {% if entry.user.photo %}
                                                    <a href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}"><img src="{{ entry.user.get_photo() }}" height="90" style="max-width: 90px" /></a>
