@@ -470,9 +470,10 @@ def edit_profile():
             user.email = form.email.data.strip()
         user.timezone = form.timezone.data.strip()
 
-        if form.photo.data.filename:
-            output = local_upload(form.photo)
-            user.photo = output
+        if form.photo.data:
+            if form.photo.data.filename:
+                output = local_upload(form.photo)
+                user.photo = output
 
         db.session.add(user)
         db.session.commit()
