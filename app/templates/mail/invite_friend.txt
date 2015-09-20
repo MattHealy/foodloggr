@@ -6,9 +6,9 @@ foodloggr is a simple food logging web app where you don't need to worry about c
 
 To get started with foodloggr, copy and paste the below link to your web browser:
 
-{{ url_for('main.register', _external=True) }}
+{{ url_for('main.register', _external=True, _scheme='https') }}
 
 Regards,
 foodloggr
 
-{{ url_for('main.index', _external=True) }}
+{{ url_for('main.index', _external=True, _scheme='https') }}

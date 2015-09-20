@@ -354,7 +354,7 @@ def friends():
 
     facebook_invite_url = 'https://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
          '&link=https://www.foodloggr.com' + \
-         '&redirect_uri=' + url_for('admin.friends', _external=True)
+         '&redirect_uri=' + url_for('admin.friends', _external=True, _scheme=current_app.config['PREFERRED_URL_SCHEME'])
 
     return render_template("admin/friends.html", form=form, title='Friends', facebook_invite_url=facebook_invite_url)
 
@@ -386,8 +386,8 @@ def facebook_friends():
     fbfriends = fbfriends.get('data')
 
     facebook_invite_url = 'https://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
-         '&link=' + url_for('main.index', _external=True) + \
-         '&redirect_uri=' + url_for('admin.friends', _external=True)
+         '&link=' + url_for('main.index', _external=True, _scheme=current_app.config['PREFERRED_URL_SCHEME']) + \
+         '&redirect_uri=' + url_for('admin.friends', _external=True, _scheme=current_app.config['PREFERRED_URL_SCHEME'])
 
     return render_template("admin/facebook_friends.html", title='Facebook Friends', fbfriends = fbfriends, \
               facebook_invite_url = facebook_invite_url)

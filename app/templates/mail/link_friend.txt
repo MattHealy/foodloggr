@@ -4,7 +4,7 @@ Hello {{ friend.first_name }},
 
 To accept this invitation, simply copy and paste the below link in to your web browser:
 
-{{ url_for('admin.accept_link', token=token, _external=True) }}
+{{ url_for('admin.accept_link', token=token, _external=True, _scheme='https') }}
 
 Regards,
 foodloggr

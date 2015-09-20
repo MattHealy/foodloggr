@@ -16,7 +16,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
-    PREFERRED_URL_SCHEME = 'https'
+    PREFERRED_URL_SCHEME = 'http'
 
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
 
@@ -61,6 +61,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+    PREFERRED_URL_SCHEME = 'https'
 
 config = {
     'development': DevelopmentConfig,
