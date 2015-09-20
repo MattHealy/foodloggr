@@ -352,12 +352,8 @@ def friends():
             flash('A friend request has been sent to ' + form.email.data.strip())
         return redirect(url_for('admin.friends'))
 
-    #facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
-    #     '&link=' + url_for('main.index', _external=True) + \
-    #     '&redirect_uri=' + url_for('admin.friends', _external=True)
-
-    facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
-         '&link=http://www.foodloggr.com' + \
+    facebook_invite_url = 'https://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+         '&link=https://www.foodloggr.com' + \
          '&redirect_uri=' + url_for('admin.friends', _external=True)
 
     return render_template("admin/friends.html", form=form, title='Friends', facebook_invite_url=facebook_invite_url)
@@ -389,7 +385,7 @@ def facebook_friends():
 
     fbfriends = fbfriends.get('data')
 
-    facebook_invite_url = 'http://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
+    facebook_invite_url = 'https://www.facebook.com/dialog/send?app_id=' + current_app.config['OAUTH_CREDENTIALS']['facebook']['id'] + \
          '&link=' + url_for('main.index', _external=True) + \
          '&redirect_uri=' + url_for('admin.friends', _external=True)
 

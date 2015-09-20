@@ -58,7 +58,7 @@ class FacebookSignIn(OAuthSignIn):
         )
         me = oauth_session.get('me?fields=email,first_name,last_name').json()
 
-        photo_url = 'http://graph.facebook.com/' + str(me['id']) + '/picture?type=large'
+        photo_url = 'https://graph.facebook.com/' + str(me['id']) + '/picture?type=large'
 
         return (
             'facebook$' + me['id'],

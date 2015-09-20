@@ -50,7 +50,7 @@ class User(db.Model):
             if os.path.isfile(os.path.join(current_app.config['UPLOAD_FOLDER'], self.photo)):
                 return url_for('admin.show_upload', filename = self.photo)
             else:
-                return 'http://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/' + self.photo
+                return 'https://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/' + self.photo
         else:
             return None
 

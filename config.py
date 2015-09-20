@@ -16,7 +16,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
-    PREFERRED_URL_SCHEME = 'http'
+    PREFERRED_URL_SCHEME = 'https'
 
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
 
