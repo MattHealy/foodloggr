@@ -1,0 +1,14 @@
+Hello {{ user.first_name }},
+
+You recently created an account with foodloggr. We noticed that since then you haven't logged any food items, so we thought we'd send a friendly reminder. You can use foodloggr to maintain a healthy lifestyle by being more aware of what you're eating. 
+
+To log in to foodloggr and start entering your food, click the below link: 
+
+{{ url_for('admin.home'), _external=True, _scheme='https') }}
+
+Once you're up and running, you can invite your friends to use foodloggr and add them to your friends list in foodloggr. You can see what your friends have been logging and give them encouragement to keep eating well, or perhaps tell them off for that junk food they ate!
+
+We hope you enjoy using foodloggr, and that it helps you achieve your goals of living a healthy lifestyle.
+
+Regards,
+foodloggr
