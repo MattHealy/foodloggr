@@ -2,7 +2,7 @@ from app import db
 from flask import current_app, flash, url_for
 from itsdangerous import JSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from .email import send_email
 
 import os.path
@@ -167,6 +167,9 @@ class Entry(db.Model):
             else:
                 count-=1
         return count
+
+    def is_deletable(self):
+        return self.timestamp > datetime.utcnow() - timedelta(hours=24)
 
     def __repr__(self):
         return '<Entry %r>' % (self.body)

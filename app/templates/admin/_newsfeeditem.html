@@ -43,10 +43,12 @@
                                                <span style="font-size: 3em;">{{ entry.get_vote_count() }}</span>
                                                </div>
                                                <div class="col-xs-2 col-md-2 text-right">
+                                                   {% if entry.is_deletable() %}
                                                    <form method="post" action="{{ url_for('admin.remove_entry', id=entry.id) }}">
                                                        {{ removeform.hidden_tag() }}
                                                        <button type="submit" class="btn btn-link delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash"></i></button>
                                                    </form>
+                                                   {% endif %}
 
                                                </div>
                                            {% else %}
