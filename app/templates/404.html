@@ -1,12 +1,13 @@
+{% extends "base.html" %}
 
-                <div class="row">
-                    <div class="col-lg-12">
+{% block content %}
 
-                        <p>Page not found</p>
+    <div class="container" style="padding-top: 50px;">
 
-                        <p><a href="{{ url_for('main.index') }}">Return to Site</a></p>
+        <h2>Page not found</h2>
 
-                    </div>
-                </div>
-                <!-- /.row -->
+        <p><a href="{{ url_for('main.index') }}">Return to Site</a></p>
 
+    </div> <!-- /container -->
+
+{% endblock %}
