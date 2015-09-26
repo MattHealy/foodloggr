@@ -1,0 +1,14 @@
+Hello {{ user.first_name }}, and welcome to foodloggr!
+
+foodloggr is a great way to track your eating habits. Simply enter the food you've eaten - no calorie counting, no searching for food in a database. It's so simple!
+
+Once you're up and running, you can invite your friends to use foodloggr and add them to your friends list in foodloggr. You can see what your friends have been logging and give them encouragement to keep eating well, or perhaps tell them off for that junk food they ate!
+
+To add foodloggr to your smartphone home screen, open the below link on your smartphone web browser (e.g. Chrome), tap "Settings" and then "Add to home screen".
+
+{{ url_for('admin.home'), _external=True, _scheme='https') }}
+
+We hope you enjoy using foodloggr, and that it helps you achieve your goals of living a healthy lifestyle.
+
+Regards,
+foodloggr
