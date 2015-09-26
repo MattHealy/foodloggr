@@ -322,7 +322,7 @@ def friends():
     form = LinkForm()
 
     if form.validate_on_submit():
-        friend = User.query.filter_by(email = form.email.data.strip()).first()
+        friend = User.query.filter_by(email = form.email.data.strip(), confirmed = True).first()
         if friend:
             if friend.id == g.user.id:
                 flash('You cannot enter your own email address here.')
@@ -340,7 +340,10 @@ def friends():
         else:
 
             # Add a "Ghost" account for this user
-            friend = User(email=form.email.data.strip(), confirmed=False, score=0)
+            friend = User.query.filter_by(email = form.email.data.strip()).first()
+            if not friend:
+                friend = User(email=form.email.data.strip(), confirmed=False, score=0)
+
             db.session.add(friend)
             db.session.commit()
 
