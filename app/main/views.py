@@ -27,11 +27,11 @@ def index():
 
 @main.route('/about', methods=['GET'])
 def about():
-    return render_template("about.html")
+    return render_template("about.html", title='About')
 
 @main.route('/terms', methods=['GET'])
 def terms():
-    return render_template("terms.html")
+    return render_template("terms.html", title='Terms and Conditions')
 
 @main.route('/register', methods=['GET','POST'])
 def register():
