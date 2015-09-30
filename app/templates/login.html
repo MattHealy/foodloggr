@@ -15,12 +15,12 @@
         <p><a href="{{ url_for('main.oauth_authorize', provider='facebook') }}" class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook"></i> Sign in with Facebook</a></p>
         <h3 class="form-signin-heading">or sign in manually:</h3>
 
-        <label for="inputEmail" class="sr-only">Email address</label>
+        <label for="email" class="sr-only">Email address</label>
         {{ form.email(placeholder="Email address", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.email %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
-        <label for="inputPassword" class="sr-only">Password</label>
+        <label for="password" class="sr-only">Password</label>
         {{ form.password(placeholder="Password", class="form-control", required="required") }}
         {% for error in form.errors.password %}
            <span style="color: red;">[{{error}}]</span>

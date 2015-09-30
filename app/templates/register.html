@@ -16,31 +16,31 @@
 
         <h3 class="form-signin-heading">or register manually:</h3>
 
-        <label for="inputFirstName" class="sr-only">First name</label>
+        <label for="first_name" class="sr-only">First name</label>
         {{ form.first_name(placeholder="First name", class="form-control", required="required", autofocus="autofocus") }}
         {% for error in form.errors.first_name %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
-        <label for="inputLastName" class="sr-only">Last name</label>
+        <label for="last_name" class="sr-only">Last name</label>
         {{ form.last_name(placeholder="Last name", class="form-control", required="required") }}
         {% for error in form.errors.last_name %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
-        <label for="inputEmail" class="sr-only">Email address</label>
+        <label for="email" class="sr-only">Email address</label>
         {{ form.email(placeholder="Email address", class="form-control", required="required") }}
         {% for error in form.errors.email %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
-        <label for="inputPassword" class="sr-only">Password</label>
+        <label for="password" class="sr-only">Password</label>
         {{ form.password(placeholder="Password", class="form-control", required="required") }}
         {% for error in form.errors.password %}
            <span style="color: red;">[{{error}}]</span>
         {% endfor %}
 
-        <label for="inputPassword2" class="sr-only">Confirm Password</label>
+        <label for="password2" class="sr-only">Confirm Password</label>
         {{ form.password2(placeholder="Confirm password", class="form-control", required="required") }}
         {% for error in form.errors.password2 %}
            <span style="color: red;">[{{error}}]</span>
