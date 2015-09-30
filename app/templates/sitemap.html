@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <div class="container" style="padding-top: 50px;">
+
+            <div class="row">
+
+                <h1>Sitemap</h2>
+                <ul>
+                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                    <li><a href="{{ url_for('main.about') }}">About</a></li>
+                    <li><a href="{{ url_for('main.terms') }}">Terms and Conditions</a></li>
+                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.register') }}">Register</a></li>
+                </ul>
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+
+{% endblock %}

@@ -33,6 +33,10 @@ def about():
 def terms():
     return render_template("terms.html", title='Terms and Conditions')
 
+@main.route('/sitemap', methods=['GET'])
+def sitemap():
+    return render_template("sitemap.html", title='Sitemap')
+
 @main.route('/register', methods=['GET','POST'])
 def register():
 
