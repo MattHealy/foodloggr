@@ -37,6 +37,9 @@
     <meta property="og:description" content="foodloggr - Simple Food Logging" />
     <meta name="google-site-verification" content="ry_fCuk-nmDGJSlp_txJNbcS7pW16NtnNiTQmasEaWk" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="{{ url_for('static', filename="manifest.json") }}">
+
     {% endblock %}
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
