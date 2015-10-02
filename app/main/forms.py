@@ -1,17 +1,18 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
 from wtforms import TextField, BooleanField, PasswordField, SubmitField, HiddenField
+from wtforms.fields.html5 import EmailField
 from wtforms.validators import Required, Email
 from ..models import User
 
 class LoginForm(Form):
-    email = TextField('email', validators=[Required(), Email()])
+    email = EmailField('email', validators=[Required(), Email()])
     password = PasswordField('password', validators=[Required()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
 
 class RegisterForm(Form):
-    email = TextField('email', validators=[Required(), Email()])
+    email = EmailField('email', validators=[Required(), Email()])
     password = PasswordField('password', validators=[Required()])
     password2 = PasswordField('password2', validators=[Required()])
     first_name = TextField('first_name')
@@ -38,7 +39,7 @@ class RegisterForm(Form):
         return True
 
 class ForgotForm(Form):
-    email = TextField('email', validators=[Required(), Email()])
+    email = EmailField('email', validators=[Required(), Email()])
     submit = SubmitField('Reset password')
 
 class ResetForm(Form):

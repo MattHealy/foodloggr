@@ -1,6 +1,7 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
 from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField
+from wtforms.fields.html5 import EmailField
 from wtforms.validators import Required, Email
 from flask_wtf.file import FileField, FileAllowed
 from ..models import User
@@ -15,13 +16,13 @@ class RemoveEntryForm(Form):
     entry_date = HiddenField('entry_date')
 
 class LinkForm(Form):
-    email = TextField('email', validators=[Required(), Email()])
+    email = EmailField('email', validators=[Required(), Email()])
     submit = SubmitField('Send Invitation')
 
 class ProfileForm(Form):
     first_name = TextField('first_name', validators=[Required()])
     last_name = TextField('last_name', validators=[Required()])
-    email = TextField('email', validators=[Required(), Email()])
+    email = EmailField('email', validators=[Required(), Email()])
     photo = FileField('Your photo', validators=[FileAllowed(['jpg','jpeg','png','gif'], 'Images only!')])
     timezone = SelectField('Your timezone', validators=[Required()], choices=[
 ("","Select a timezone"),
