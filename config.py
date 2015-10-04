@@ -29,6 +29,7 @@ class Config:
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
     ENTRIES_PER_PAGE = 30
+    MESSAGES_PER_PAGE = 10
 
     OAUTH_CREDENTIALS = {
         'facebook': {

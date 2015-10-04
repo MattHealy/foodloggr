@@ -1,0 +1,23 @@
+<div class="row" style="margin-bottom: 10px;">
+ <div class="col-md-offset-10 col-md-2 text-right">
+
+{% if messages.has_prev %}
+    <a href="{{ url_for('admin.user_feed', user_id = user.id, page=messages.prev_num) }}">
+        <i class="fa fa-lg fa-chevron-circle-left"></i>
+    </a>
+{% else %}
+    <i class="fa fa-lg fa-chevron-circle-left"></i>
+{% endif %}
+
+<strong>Page {{ messages.page }} of {{ messages.pages }}</strong>
+
+{% if messages.has_next %}
+    <a href="{{ url_for('admin.user_feed', user_id = user.id, page=messages.next_num) }}">
+        <i class="fa fa-lg fa-chevron-circle-right"></i>
+    </a>
+{% else %}
+    <i class="fa fa-lg fa-chevron-circle-right"></i>
+{% endif %}
+
+ </div>
+</div>

@@ -1,0 +1,29 @@
+                                   <div class="panel panel-default">
+                                   <div class="panel-heading">
+                                       <div class="row">
+
+                                           <div class="col-xs-4 col-md-2 text-center">
+
+                                               <a href="{{ url_for('admin.user_feed', user_id = message.sender_id) }}"><img src="{{ message.sender.get_photo() }}" height="90" style="max-width: 90px" /></a>
+
+                                               <p style="margin-top: 10px;">
+                                               <a style="color: black;" href="{{ url_for('admin.user_feed', user_id = message.sender_id) }}">{{ message.sender.first_name }} {{ message.sender.last_name }}</a>
+                                               </p>
+
+                                           </div>
+
+                                           <div class="col-xs-4 col-md-7">
+
+                                               {{ message.body }}
+
+                                               <p>
+                                               <small>
+                                                   {{ moment(message.timestamp).format("D MMM") }}
+                                               </small>
+                                               </p>
+
+                                           </div>
+
+                                       </div><!-- row -->
+                                   </div><!-- well -->
+                                   </div><!-- well -->

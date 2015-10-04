@@ -1,6 +1,6 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField
+from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField, TextAreaField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import Required, Email
 from flask_wtf.file import FileField, FileAllowed
@@ -480,3 +480,8 @@ class AccountForm(Form):
             return False
 
         return True
+
+class NewMessageForm(Form):
+    body = TextAreaField('body', validators=[Required()])
+    submit = SubmitField('Send Message')
+    user_id = SelectField('To', validators=[Required()], coerce=int)

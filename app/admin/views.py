@@ -3,9 +3,9 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import admin
-from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm
+from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, NewMessageForm
 from .. import db, lm
-from ..models import User, Entry, Friendship, Vote
+from ..models import User, Entry, Friendship, Vote, Message
 from ..email import send_email
 from ..tools import local_upload
 from ..oauth import OAuthSignIn
@@ -557,6 +557,31 @@ def calendarfeed():
         entrylist.append(entryobject)
 
     return Response(json.dumps(entrylist),  mimetype='application/json')
+
+@admin.route('/messages', methods=['GET'])
+@login_required
+def messages():
+    page = request.args.get('page', 1, type=int)
+    messages = Message.query.filter_by(user_id = g.user.id).order_by(Message.timestamp.desc()). \
+               paginate(page, current_app.config['MESSAGES_PER_PAGE'], False)
+    return render_template("admin/messages.html", messages = messages, title='Messages')
+
+@admin.route('/messages/<int:id>', methods=['GET'])
+@login_required
+def message(id):
+    message = Message.query.filter_by(user_id = g.user.id, id = id).first_or_404()
+    return render_template("admin/message.html", message = message, title='Message')
+
+@admin.route('/messages/new', methods=['GET','POST'])
+@login_required
+def new_message():
+
+    form = NewMessageForm()
+
+    form.user_id.choices = [(friend.friend.id, friend.friend.first_name) for friend in g.user.friends]
+    form.user_id.choices.insert(0, ('0', '- - Select a friend - -'))
+
+    return render_template("admin/newmessage.html", title='New Message', form=form)
 
 @lm.user_loader
 def load_user(id):

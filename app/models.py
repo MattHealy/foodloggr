@@ -7,6 +7,23 @@ from .email import send_email
 
 import os.path
 
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    is_read = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime)
+    body = db.Column(db.Text)
+    user = db.relationship('User', primaryjoin="Message.user_id == User.id")
+    sender = db.relationship('User', primaryjoin="Message.sender_id == User.id")
+
+    @property
+    def preview(self):
+        if len(self.body) > 50:
+            return self.body[:50] + '...'
+        else:
+            return self.body
+
 class Friendship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -33,6 +50,12 @@ class User(db.Model):
 
     entries = db.relationship('Entry', backref='user', lazy='dynamic', cascade="all, delete")
 
+    messages = db.relationship('Message',
+                              primaryjoin="and_(Message.user_id == User.id)",
+                              lazy='dynamic', 
+                              foreign_keys='Message.user_id', cascade="all, delete"
+              )
+
     friends = db.relationship('Friendship',
                               primaryjoin="and_(Friendship.user_id == User.id, Friendship.confirmed == True)",
                               lazy='dynamic', 
@@ -52,7 +75,8 @@ class User(db.Model):
             else:
                 return 'https://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/' + self.photo
         else:
-            return None
+            #return None
+            return 'http://placehold.it/150x150'
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:
@@ -135,6 +159,10 @@ class User(db.Model):
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
+
+    @property
+    def messages_unread(self):
+        return self.messages.filter_by(is_read = 0)
 
     @password.setter
     def password(self, password):

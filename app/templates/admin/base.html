@@ -71,61 +71,43 @@
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
-                <!--
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {% if g.user.messages_unread.count() > 0 %}{{ g.user.messages_unread.count() }}{% endif %}
+                        <i class="fa fa-envelope"></i> <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu message-dropdown">
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                        {% if g.user.messages.count() > 0 %}
+                            {% for message in g.user.messages %}
+                            <li class="message-preview">
+                                <a href="{{ url_for('admin.message', id = message.id) }}">
+                                    <div class="media">
+                                        <span class="pull-left">
+                                            {% if message.sender.photo %}
+                                                <img height="50" width="50" src="{{ message.sender.get_photo() }}" class="media-object" alt="{{ message.sender.first_name }}" />
+                                            {% else %}
+                                                <img height="50" width="50" src="http://placehold.it/50x50" class="media-object" alt="{{ message.sender.first_name }}" />
+                                            {% endif %}
+                                        </span>
+                                        <div class="media-body">
+                                            <h5 class="media-heading"><strong>{{ message.sender.first_name }} {{ message.sender.last_name }}</strong></h5>
+                                            <p class="small text-muted"><i class="fa fa-clock-o"></i> {{ moment(message.timestamp).fromNow() }} </p>
+                                            <p>{{ message.preview }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-footer">
-                            <a href="#">Read All New Messages</a>
-                        </li>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            <li class="message-footer">
+                                <a href="{{ url_for('admin.messages') }}">Read All Messages</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="#">No messages</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </li>
-                -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     {% if g.user.friend_requests.count() > 0 %}{{ g.user.friend_requests.count() }}{% endif %}
