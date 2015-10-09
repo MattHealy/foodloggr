@@ -8,6 +8,7 @@ from flask.ext.moment import Moment
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
 from celery import Celery
+from opbeat.contrib.flask import Opbeat
 
 from werkzeug.contrib.fixers import ProxyFix
 
@@ -27,6 +28,12 @@ celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 csrf = CsrfProtect()
 
+opbeat = Opbeat(
+    organization_id = Config.OPBEAT_CREDENTIALS.get('organization_id'),
+    app_id = Config.OPBEAT_CREDENTIALS.get('app_id'),
+    secret_token = Config.OPBEAT_CREDENTIALS.get('secret_token')
+)
+
 def create_app(config_name):
 
     app = Flask(__name__)
@@ -41,6 +48,7 @@ def create_app(config_name):
     moment.init_app(app)
 
     csrf.init_app(app)
+    opbeat.init_app(app)
 
     celery.conf.update(app.config)
 

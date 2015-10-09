@@ -45,6 +45,12 @@ class Config:
         }
     }
 
+    OPBEAT_CREDENTIALS = {
+        'organization_id': '2e95459be3bf4d47ae0000d7382f4f0c',
+        'app_id': '44316c5b47',
+        'secret_token': os.environ.get('OPBEAT_SECRET_TOKEN')
+    }
+
     @staticmethod
     def init_app(app):
         pass
