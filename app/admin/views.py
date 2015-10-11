@@ -518,6 +518,10 @@ def edit_account():
 @admin.route('/calendar', methods=['GET'])
 @login_required
 def calendar():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
     return render_template("admin/calendar.html")
 
 @admin.route('/calendarfeed', methods=['GET'])
