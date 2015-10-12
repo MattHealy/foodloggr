@@ -14,4 +14,8 @@ def send_email(to, subject, template, **kwargs):
                   sender=app.config['MAIL_SENDER'], recipients=[to])
     msg.body = render_template(template + '.txt', **kwargs)
     msg.html = render_template(template + '.html', **kwargs)
-    send_async_email.delay(msg)
+    delay_seconds = kwargs.get('delay_seconds',0)
+    if delay_seconds > 0:
+        send_async_email.apply_async(args=[msg], countdown=delay_seconds)
+    else:
+        send_async_email.delay(msg)

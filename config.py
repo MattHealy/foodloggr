@@ -17,6 +17,7 @@ class Config:
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     CSRF_ENABLED = True
     PREFERRED_URL_SCHEME = 'http'
+    SERVER_NAME = 'localhost:5000'
 
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
 
@@ -70,6 +71,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
     PREFERRED_URL_SCHEME = 'https'
+    SERVER_NAME = 'www.foodloggr.com'
 
 config = {
     'development': DevelopmentConfig,

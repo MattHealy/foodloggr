@@ -4,7 +4,7 @@ You recently created an account with foodloggr. We noticed that since then you h
 
 To log in to foodloggr and start entering your food, click the below link: 
 
-{{ url_for('admin.home'), _external=True, _scheme='https') }}
+{{ url_for('admin.home', _external=True, _scheme='https') }}
 
 Once you're up and running, you can invite your friends to use foodloggr and add them to your friends list in foodloggr. You can see what your friends have been logging and give them encouragement to keep eating well, or perhaps tell them off for that junk food they ate!
 
