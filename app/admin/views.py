@@ -3,9 +3,9 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import admin
-from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm
+from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm
 from .. import db, lm
-from ..models import User, Entry, Friendship, Vote
+from ..models import User, Entry, Friendship, Vote, HelpRequest
 from ..email import send_email
 from ..tools import local_upload
 from ..oauth import OAuthSignIn
@@ -514,6 +514,28 @@ def edit_account():
         return redirect(url_for('admin.home'))
 
     return render_template("admin/edit_account.html",title='Edit Account',form=form)
+
+@admin.route('/help', methods=['GET','POST'])
+@login_required
+def help():
+
+    user = g.user
+
+    form = HelpForm()
+
+    if form.validate_on_submit():
+
+        help = HelpRequest(user_id = user.id, timestamp = datetime.utcnow(), body = form.body.data.strip())
+        db.session.add(help)
+        db.session.commit()
+
+        send_email(current_app.config['ADMIN_EMAIL'], 'Help Request','mail/help', user=user, body=form.body.data.strip())
+
+        flash('Your help request has been sent. We will get back to you as soon as possible.')
+
+        return redirect(url_for('admin.home'))
+
+    return render_template("admin/help.html",title='Help',form=form)
 
 @admin.route('/calendar', methods=['GET'])
 @login_required

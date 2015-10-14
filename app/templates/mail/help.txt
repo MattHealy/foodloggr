@@ -1,0 +1,16 @@
+Hello Admin,
+
+A help request has been submitted by user: {{ user.first_name }} {{ user.last_name }}.
+
+Email: {{ user.email }}
+
+Message:
+
+---------------------------------------------------------------------------------------
+
+{{ body }}
+
+---------------------------------------------------------------------------------------
+
+Regards,
+foodloggr

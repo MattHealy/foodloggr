@@ -188,6 +188,9 @@
                     <li{% if request.path=='/app/calendar' %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.calendar') }}"><i class="fa fa-fw fa-calendar"></i> Calendar</a>
                     </li>
+                    <li{% if request.path=='/app/help' %} class="active"{% endif %}>
+                        <a href="{{ url_for('admin.help') }}"><i class="fa fa-fw fa-question-circle"></i> Help</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
