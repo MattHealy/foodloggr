@@ -369,6 +369,9 @@
 
              });
 
+             $("#body").autocomplete({
+                 source: '{{ url_for('admin.entries_ajax_search') }}'
+             });
 
          });
 

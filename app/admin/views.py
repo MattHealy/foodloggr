@@ -584,6 +584,24 @@ def calendarfeed():
 
     return Response(json.dumps(entrylist),  mimetype='application/json')
 
+@admin.route('/entries_json', methods=['GET'])
+@login_required
+def entries_ajax_search():
+
+    entries = g.user.entries
+
+    term = request.args.get('term')
+
+    if term:
+        entries = entries.filter(Entry.body.like(term + '%'))
+
+    entrylist = []
+
+    for entry in entries:
+        entrylist.append(entry.body)
+
+    return Response(json.dumps(entrylist),  mimetype='application/json')
+
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
