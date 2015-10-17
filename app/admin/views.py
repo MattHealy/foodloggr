@@ -600,6 +600,8 @@ def entries_ajax_search():
     for entry in entries:
         entrylist.append(entry.body)
 
+    entrylist = sorted(set(entrylist))
+
     return Response(json.dumps(entrylist),  mimetype='application/json')
 
 @lm.user_loader
