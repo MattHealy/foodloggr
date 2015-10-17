@@ -28,7 +28,7 @@ class Config:
 
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-    BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 18000}  # 5 hours
+    BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 172800}  # 2 days
 
     ENTRIES_PER_PAGE = 30
 
