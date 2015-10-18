@@ -8,3 +8,5 @@ test.db
 *.pyc
 app/*.pyc
 tmp/*
+celerybeat-schedule
+celerybeat.pid

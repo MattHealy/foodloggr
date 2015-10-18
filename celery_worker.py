@@ -9,7 +9,7 @@ if os.path.exists('.env'):
             os.environ[var[0]] = var[1]
 
 from app import create_app, db, celery
-from app.models import User, Entry, Friendship
+from app.models import User, Entry, Friendship, ReminderSetting
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 

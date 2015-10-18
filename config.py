@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -29,6 +30,13 @@ class Config:
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
     BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 172800}  # 2 days
+
+    CELERYBEAT_SCHEDULE = {
+        'reminder-emails': {
+            'task': 'app.delayed_emails.daily_reminder_email',
+            'schedule': timedelta(hours=1)
+        },
+    }
 
     ENTRIES_PER_PAGE = 30
 
