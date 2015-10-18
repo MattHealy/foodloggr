@@ -3,9 +3,9 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import admin
-from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm
+from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm, ReminderForm
 from .. import db, lm
-from ..models import User, Entry, Friendship, Vote, HelpRequest
+from ..models import User, Entry, Friendship, Vote, HelpRequest, ReminderSetting
 from ..email import send_email
 from ..tools import local_upload
 from ..oauth import OAuthSignIn
@@ -495,12 +495,10 @@ def edit_account():
     if not g.user.is_confirmed():
         return redirect(url_for('admin.unconfirmed'))
 
-    if g.user.social_id:
-        return redirect(url_for('admin.home'))
-
     user = g.user
 
     form = AccountForm()
+    reminder_form = ReminderForm()
 
     if form.validate_on_submit():
 
@@ -513,7 +511,35 @@ def edit_account():
 
         return redirect(url_for('admin.home'))
 
-    return render_template("admin/edit_account.html",title='Edit Account',form=form)
+    elif reminder_form.validate_on_submit():
+
+        settings = user.reminder_settings
+
+        if not settings:
+            settings = ReminderSetting(user_id = user.id)
+            db.session.add(settings)
+
+        if reminder_form.reminder_morning.data:
+            settings.morning = True
+        if reminder_form.reminder_afternoon.data:
+            settings.afternoon = True
+        if reminder_form.reminder_evening.data:
+            settings.evening= True
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Reminder settings updated.')
+
+        return redirect(url_for('admin.home'))
+
+    reminder_settings = user.reminder_settings
+    if reminder_settings:
+        reminder_form.reminder_morning.data = user.reminder_settings.morning
+        reminder_form.reminder_afternoon.data = user.reminder_settings.afternoon
+        reminder_form.reminder_evening.data = user.reminder_settings.evening
+
+    return render_template("admin/edit_account.html",title='Edit Account',form=form, reminder_form=reminder_form)
 
 @admin.route('/help', methods=['GET','POST'])
 @login_required

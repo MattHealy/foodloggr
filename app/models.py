@@ -51,6 +51,8 @@ class User(db.Model):
                               foreign_keys='Friendship.friend_id', cascade="all, delete"
               )
 
+    reminder_settings = db.relationship('ReminderSetting', backref='user', cascade="all, delete", uselist=False)
+
     def get_photo(self):
         if self.photo:
             if os.path.isfile(os.path.join(current_app.config['UPLOAD_FOLDER'], self.photo)):
@@ -186,4 +188,11 @@ class Vote(db.Model):
     upvote = db.Column(db.Boolean)
     from_userid = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+class ReminderSetting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    morning = db.Column(db.Boolean)
+    afternoon = db.Column(db.Boolean)
+    evening = db.Column(db.Boolean)
+         
 db.event.listen(User.email, 'set', User.on_changed_email)

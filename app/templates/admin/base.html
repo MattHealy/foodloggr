@@ -153,11 +153,9 @@
                         <li>
                             <a href="{{ url_for('admin.edit_profile') }}"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
-                        {% if not g.user.social_id %}
                         <li>
                             <a href="{{ url_for('admin.edit_account') }}"><i class="fa fa-fw fa-cog"></i> Account</a>
                         </li>
-                        {% endif %}
                         <!--
                         <li>
                             <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>

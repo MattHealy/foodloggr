@@ -1,6 +1,6 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField, TextAreaField
+from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField, TextAreaField, BooleanField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import Required, Email
 from flask_wtf.file import FileField, FileAllowed
@@ -483,3 +483,8 @@ class AccountForm(Form):
 
 class HelpForm(Form):
     body = TextAreaField('body', validators=[Required()])
+
+class ReminderForm(Form):
+    reminder_morning = BooleanField('morning reminder')
+    reminder_afternoon = BooleanField('afternoon reminder')
+    reminder_evening = BooleanField('evening reminder')
