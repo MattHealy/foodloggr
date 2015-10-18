@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from celery.schedules import crontab
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -34,7 +35,7 @@ class Config:
     CELERYBEAT_SCHEDULE = {
         'reminder-emails': {
             'task': 'app.delayed_emails.daily_reminder_email',
-            'schedule': timedelta(hours=1)
+            'schedule': crontab(minute=0)
         },
     }
 
