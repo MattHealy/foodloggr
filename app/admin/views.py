@@ -1,4 +1,5 @@
-from flask import render_template, flash, redirect, url_for, request, g, current_app, session, abort, send_from_directory, Response
+from flask import render_template, flash, redirect, url_for, request, g, current_app, session, \
+                  abort, send_from_directory, Response, Markup
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
@@ -48,6 +49,13 @@ def home():
 
         db.session.add(entry)
         db.session.commit()
+
+        if g.user.entries.count() == 1:
+            message = Markup('Well done on adding your first entry!<br /><br />You can set up reminder \
+                    emails so that you never forget to log your food each day.<br /><br /> \
+                    <br /><strong><a href="' + url_for('admin.edit_account') + '">Click here \
+                    to set up your reminders</a></strong>')
+            flash(message)
 
         return redirect(url_for('admin.home', date = form.entry_date.data.strip()))
 
