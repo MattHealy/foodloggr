@@ -60,7 +60,7 @@ class User(db.Model):
             else:
                 return 'https://s3-ap-southeast-2.amazonaws.com/foodlog-userphotos/' + self.photo
         else:
-            return None
+            return url_for('static', filename='img/default-userphoto.png')
 
     def is_admin(self):
         if str(self.id) in current_app.config['ADMINS']:

@@ -4,9 +4,7 @@
 
                                            <div class="col-xs-4 col-md-2 text-center">
 
-                                               {% if entry.user.photo %}
-                                                   <a href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}"><img src="{{ entry.user.get_photo() }}" height="90" style="max-width: 90px" /></a>
-                                               {% endif %}
+                                               <a href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}"><img src="{{ entry.user.get_photo() }}" height="90" style="max-width: 90px" /></a>
 
                                                <p style="margin-top: 10px;">
                                                <a style="color: black;" href="{{ url_for('admin.user_feed', user_id = entry.user.id) }}">{{ entry.user.first_name }} {{ entry.user.last_name }}</a>

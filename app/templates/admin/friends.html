@@ -16,9 +16,7 @@
 
                                            <div class="col-xs-6 col-md-3 text-center">
 
-                                               {% if friendship.friend.photo %}
-                                                   <a href="{{ url_for('admin.user_feed', user_id = friendship.friend.id) }}"><img src="{{ friendship.friend.get_photo() }}" height="90" style="max-width: 90px" /></a>
-                                               {% endif %}
+                                               <a href="{{ url_for('admin.user_feed', user_id = friendship.friend.id) }}"><img src="{{ friendship.friend.get_photo() }}" height="90" style="max-width: 90px" /></a>
 
                                            </div>
 
