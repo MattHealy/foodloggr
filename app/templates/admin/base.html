@@ -131,7 +131,9 @@
                 -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {% if g.user.friend_requests.count() > 0 %}{{ g.user.friend_requests.count() }}{% endif %}
+                    {% if g.user.friend_requests.count() + g.user.notifications.count() > 0 %}
+                        {{ g.user.friend_requests.count() + g.user.notifications.count() }}
+                    {% endif %}
                     <i class="fa fa-bell"></i> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu alert-dropdown">
@@ -143,7 +145,19 @@
                                     {% endfor %}
                                 {% else %}
                                         <li>
-                                            <a href="#">No alerts</a>
+                                            <a href="#">No friend requests</a>
+                                        </li>
+                                {% endif %}
+                                <li class="divider"></li>
+                                {% if g.user.notifications.count() > 0 %}
+                                    {% for notification in g.user.notifications %}
+                                        <li>
+                                            <a href="#">{{ notification.body }}</a>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                        <li>
+                                            <a href="#">No notifications</a>
                                         </li>
                                 {% endif %}
                     </ul>

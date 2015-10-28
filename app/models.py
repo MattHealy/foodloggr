@@ -39,6 +39,7 @@ class User(db.Model):
     score = db.Column(db.Integer, default=0)
 
     entries = db.relationship('Entry', backref='user', lazy='dynamic', cascade="all, delete")
+    notifications = db.relationship('Notification', backref='user', lazy='dynamic', cascade="all, delete")
 
     friends = db.relationship('Friendship',
                               primaryjoin="and_(Friendship.user_id == User.id, Friendship.confirmed == True)",
@@ -206,5 +207,12 @@ class ReminderSetting(db.Model):
     morning = db.Column(db.Boolean)
     afternoon = db.Column(db.Boolean)
     evening = db.Column(db.Boolean)
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    body = db.Column(db.String(128))
+    is_read = db.Column(db.Boolean)
          
 db.event.listen(User.email, 'set', User.on_changed_email)

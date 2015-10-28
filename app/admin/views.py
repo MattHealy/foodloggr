@@ -6,7 +6,7 @@ from itsdangerous import JSONWebSignatureSerializer
 from . import admin
 from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm, ReminderForm
 from .. import db, lm
-from ..models import User, Entry, Friendship, Vote, HelpRequest, ReminderSetting
+from ..models import User, Entry, Friendship, Vote, HelpRequest, ReminderSetting, Notification
 from ..email import send_email
 from ..tools import local_upload
 from ..oauth import OAuthSignIn
@@ -182,13 +182,18 @@ def vote():
     existing_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote == upvote, Vote.from_userid == g.user.id).first()
     existing_opposite_vote = Vote.query.filter(Vote.entry_id == entry_id, Vote.upvote != upvote, Vote.from_userid == g.user.id).first()
 
+    notification = Notification(user_id = user.id, timestamp = datetime.utcnow(), is_read=False)
+
     if existing_opposite_vote:
         existing_opposite_vote.upvote = upvote
         if upvote:
             user.score = user.score + 2
+            notification.body = 'Upvote from ' + g.user.first_name + ' for ' + entry.body
         else:
             user.score = user.score - 2
+            notification.body = 'Downvote from ' + g.user.first_name + ' for ' + entry.body
         db.session.add(existing_opposite_vote)
+        db.session.add(notification)
         db.session.add(user)
         db.session.commit()
         return '', 201
@@ -206,9 +211,12 @@ def vote():
         vote = Vote(entry_id = entry_id, from_userid = g.user.id, upvote = upvote)
         if upvote:
             user.score = user.score + 1
+            notification.body = 'Upvote from ' + g.user.first_name + ' for ' + entry.body
         else:
             user.score = user.score - 1
+            notification.body = 'Downvote from ' + g.user.first_name + ' for ' + entry.body
         db.session.add(user)
+        db.session.add(notification)
         db.session.add(vote)
         db.session.commit()
         return '', 201
