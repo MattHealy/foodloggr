@@ -104,7 +104,7 @@ def home():
     yesterday = (today - timedelta(days=1)).strftime("%d-%m-%Y")
 
     return render_template("admin/home.html", form=form, removeform=removeform, entries=entries, \
-                            title='News Feed', datestring = datestring, \
+                            datestring = datestring, \
                             placeholder = placeholder, yesterday = yesterday, \
                             tomorrow = tomorrow)
 

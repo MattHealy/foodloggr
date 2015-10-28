@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from .email import send_email
 
 import os.path
+import pytz
 
 class HelpRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -136,6 +137,17 @@ class User(db.Model):
                  filter(Friendship.user_id == self.id). \
                  filter(Friendship.confirmed == True). \
                  filter(Entry.entry_date>=today).filter(Entry.entry_date<tomorrow)
+
+    def get_score_days(self, days):
+        score = 0
+        start = datetime.now(pytz.timezone(self.timezone)).date() - timedelta(days=days)
+        end = datetime.now(pytz.timezone(self.timezone)).date() + timedelta(days=1)
+        entries = Entry.query.filter(Entry.user_id == self.id).filter(Entry.entry_date>=start).filter \
+                                    (Entry.entry_date<end)
+        for entry in entries:
+            score = score + entry.get_vote_count()
+
+        return score
 
     def __repr__(self):
         return '<User %r %r>' % (self.first_name, self.last_name)
