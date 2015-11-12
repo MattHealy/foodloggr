@@ -525,15 +525,23 @@ def edit_account():
 
         if not settings:
             settings = ReminderSetting(user_id = user.id)
-            db.session.add(settings)
 
         if reminder_form.reminder_morning.data:
             settings.morning = True
+        else:
+            settings.morning = False
+
         if reminder_form.reminder_afternoon.data:
             settings.afternoon = True
+        else:
+            settings.afternoon = False
+
         if reminder_form.reminder_evening.data:
             settings.evening= True
+        else:
+            settings.evening = False
 
+        db.session.add(settings)
         db.session.add(user)
         db.session.commit()
 
