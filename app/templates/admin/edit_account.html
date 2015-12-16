@@ -21,7 +21,7 @@
 
                             <label class="col-sm-3 control-label">Send me a reminder email every:</label>
 
-                            <div class="col-sm-6">
+                            <div class="col-sm-2">
 
                             {{ reminder_form.reminder_morning }} <label for="reminder_morning" style="font-weight: normal;">Morning</label>
                             {% for error in reminder_form.errors.reminder_morning %}
@@ -33,6 +33,17 @@
                             {% endfor %}<br />
                             {{ reminder_form.reminder_evening }} <label for="reminder_evening" style="font-weight: normal;">Evening</label>
                             {% for error in reminder_form.errors.reminder_evening %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+
+                            </div>
+
+                            <label class="col-sm-4 control-label" for="weight_day">Remind me to record my weight every:</label>
+
+                            <div class="col-sm-3">
+
+                            {{ reminder_form.weight_day(class="form-control") }}
+                            {% for error in reminder_form.errors.weight_day %}
                                 <span style="color: red;">[{{error}}]</span>
                             {% endfor %}
 

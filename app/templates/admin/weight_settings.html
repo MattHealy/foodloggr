@@ -1,0 +1,80 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+            <div class="row" style="margin-bottom: 50px;">
+                <div class="col-lg-12 col-xs-12">
+                    <p><a href="{{ url_for('admin.weighttracker') }}" class="btn btn-lg btn-primary" role="button">Back to Weight Tracking</a></p>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <h2>Weight Target</h2>
+
+                    <form class="form-horizontal" role="form" method="post">
+
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label" for="first_name">Weight (kg)</label>
+                            <div class="col-sm-4">
+                            {{ form.weight(placeholder="e.g. 80", class="form-control", required="required", autofocus="autofocus") }}
+                            {% for error in form.errors.weight %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label" for="last_name">Date</label>
+                            <div class="col-sm-4">
+                            {{ form.target_date(placeholder="target date", class="form-control datepicker-input", required="required") }}
+                            {% for error in form.errors.target_date %}
+                                <span style="color: red;">[{{error}}]</span>
+                            {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-sm-2 col-sm-offset-2">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                                    Save
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+                    <p>Use the Weight Tracker to track progress towards your weight goals. For example, you might want to weigh 80kg by March 2016. You can enter this target above and track progress towards it.</p>
+
+                </div>
+                <div class="col-md-4">
+                    {% if target_weights %}
+                        {% if target_weights.count() > 0 %}
+                            <p><strong>Current Targets</strong></p>
+                            <ul>
+                            {% for target_weight in target_weights %}
+                                <li>
+                                    {{ target_weight.weight }} by {{ target_weight.target_date.strftime('%-d %b %Y') }}
+                                    <form style="display: inline;" method="post" action="{{ url_for('admin.remove_target', id=target_weight.id) }}">
+                                        {{ removeform.hidden_tag() }}
+                                        <button type="submit" class="btn btn-link delete-button" style="display: inline-block"><i class="fa fa-fw fa-trash"></i></button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+            </div>
+            <!-- /.row -->
+
+{% endblock %}

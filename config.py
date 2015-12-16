@@ -37,6 +37,10 @@ class Config:
             'task': 'app.delayed_emails.daily_reminder_email',
             'schedule': crontab(minute=0)
         },
+        'weight-reminder-emails': {
+            'task': 'app.delayed_emails.weight_reminder_email',
+            'schedule': crontab(minute=0)
+        },
     }
 
     ENTRIES_PER_PAGE = 30

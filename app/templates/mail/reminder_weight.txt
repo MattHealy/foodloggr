@@ -1,0 +1,14 @@
+Hello {{ user.first_name }},
+
+You have requested a reminder email so you don't forget to record your weight for this week.
+
+To record your weight for this week, visit the following link: 
+
+{{ url_for('admin.weighttracker', _external=True, _scheme='https') }}
+
+If you no longer wish to receive these reminder emails, please visit the following link and update your reminder settings:
+
+{{ url_for('admin.edit_account', _external=True, _scheme='https') }}
+
+Regards,
+foodloggr

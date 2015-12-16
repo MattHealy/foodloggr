@@ -1,0 +1,127 @@
+{% extends "admin/base.html" %}
+
+{% block scripts %}
+
+{{ super() }}
+
+<script>
+
+google.load('visualization', '1', {packages: ['corechart', 'line']});
+google.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('date', 'Date');
+      data.addColumn('number', 'Weight');
+{% if target_weights %}
+    {% if target_weights.count() > 0 %}
+        {% for target_weight in target_weights %}
+            data.addColumn('number', 'Target {{ target_weight.target_date.strftime('%-d %b') }}');
+        {% endfor %}
+    {% endif %}
+{% endif %}
+
+{% if weight_tracking %}
+    {% if weight_tracking.count() > 0 %}
+      data.addRows([
+        {% for entry in weight_tracking %}
+          [new Date({{ entry.timestamp | javascript_date }}), 
+                    {{ entry.weight }}
+            {% if target_weights %}
+                {% if target_weights.count() > 0 %}
+                    ,
+                    {% for target_weight in target_weights %}
+                        {{ target_weight.weight }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                {% endif  %}
+            {% endif  %}
+          ]{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]);
+    {% endif %}
+{% endif %}
+
+      var options = {
+        curveType: 'function',
+        vAxis: {
+          title: 'Weight (kg)'
+        },
+        height: 400,
+        animation: {
+          startup: true,
+          duration: 1000,
+          easing: 'out'
+        },
+        series: {
+          0: {
+             pointSize: 4
+          }
+            {% if target_weights %}
+                {% if target_weights.count() > 0 %}
+                    ,
+                        {% for i in range(0,target_weights.count()) %}
+                            {{ i+1 }}: {
+                                     pointSize: 0
+                            }{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                {% endif  %}
+            {% endif  %}
+        }
+      };
+
+{% if weight_tracking %}
+    {% if weight_tracking.count() > 0 %}
+      var chart = new google.visualization.LineChart(document.getElementById('weight_chart'));
+
+      chart.draw(data, options);
+    {% endif %}
+{% endif %}
+
+}
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <p><a href="{{ url_for('admin.weight_settings') }}" class="btn btn-lg btn-primary" role="button">Edit Settings</a></p>
+                    </div>
+                </div>
+
+                {% if not today_weight %}
+                <div class="row">
+                    <div class="center-block text-center">
+
+                        <h1>Enter today's weight</h1>
+
+                        <form role="form" method="post">
+
+                            {{ form.hidden_tag() }}
+
+                            <div class="form-group">
+                                {{ form.weight(placeholder="today's weight", class="form-control", required="required", autofocus="autofocus", style="display: inline; margin-right: 5px; margin-left: 55px; width: auto;") }}
+                                <button class="btn btn-success" type="submit">Submit</button>
+                                {% for error in form.errors.weight %}
+                                    <span style="color: red;">[{{error}}]</span>
+                                {% endfor %}
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <div id="weight_chart" style="height: 500px;"></div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+{% endblock %}

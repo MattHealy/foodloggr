@@ -60,6 +60,15 @@ def create_app(config_name):
 
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
+    @app.template_filter()
+    def javascript_date(value):
+        year = value.strftime('%Y')
+        month = int(value.strftime('%-m')) - 1
+        day = value.strftime('%-d')
+        return "{0}, {1}, {2}".format(year,month,day)
+
+    app.jinja_env.filters['javascript_date'] = javascript_date
+
     if not app.debug:
 
         import logging

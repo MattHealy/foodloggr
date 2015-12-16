@@ -1,6 +1,7 @@
 from flask import g, current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField, TextAreaField, BooleanField
+from wtforms import TextField, SubmitField, HiddenField, PasswordField, SelectField, TextAreaField, \
+                    BooleanField, DecimalField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import Required, Email
 from flask_wtf.file import FileField, FileAllowed
@@ -488,3 +489,23 @@ class ReminderForm(Form):
     reminder_morning = BooleanField('morning reminder')
     reminder_afternoon = BooleanField('afternoon reminder')
     reminder_evening = BooleanField('evening reminder')
+    weight_day = SelectField('Weight Reminder', coerce=int, choices=[
+(0,"Select a day"),
+(1,"Monday"),
+(2,"Tuesday"),
+(3,"Wednesday"),
+(4,"Thursday"),
+(5,"Friday"),
+(6,"Saturday"),
+(7,"Sunday")
+                ])
+
+class WeightSettingsForm(Form):
+    weight = DecimalField('weight', validators=[Required()])
+    target_date = TextField('target_date', validators=[Required()])
+
+class RemoveTargetForm(Form):
+    pass
+
+class WeightForm(Form):
+    weight = DecimalField('weight', validators=[Required()])

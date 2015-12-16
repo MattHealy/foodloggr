@@ -33,3 +33,15 @@ def daily_reminder_email():
                     send_email(user.email, "Afternoon reminder",'mail/reminder_daily', user=user)
                 if user.reminder_settings.evening and now_hour == 20:
                     send_email(user.email, "Evening reminder",'mail/reminder_daily', user=user)
+
+@celery.task
+def weight_reminder_email():
+
+    with current_app.app_context():
+        users = User.query.join(ReminderSetting).filter(User.confirmed == True).all()
+        for user in users:
+            if user.timezone:
+                now_hour = datetime.now(pytz.timezone(user.timezone)).hour
+                now_day = datetime.now(pytz.timezone(user.timezone)).isoweekday()
+                if user.reminder_settings.weight_day == now_day and now_hour == 7:
+                    send_email(user.email, "Record your weight for this week",'mail/reminder_weight', user=user)

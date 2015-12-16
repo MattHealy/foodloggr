@@ -4,9 +4,11 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from datetime import datetime, timedelta, date
 from itsdangerous import JSONWebSignatureSerializer
 from . import admin
-from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm, ReminderForm
+from .forms import EntryForm, LinkForm, RemoveEntryForm, ProfileForm, AccountForm, HelpForm,\
+                   ReminderForm, WeightSettingsForm, RemoveTargetForm, WeightForm
 from .. import db, lm
-from ..models import User, Entry, Friendship, Vote, HelpRequest, ReminderSetting
+from ..models import User, Entry, Friendship, Vote, HelpRequest, ReminderSetting, TargetWeight, \
+                     WeightTracking
 from ..email import send_email
 from ..tools import local_upload
 from ..oauth import OAuthSignIn
@@ -537,9 +539,14 @@ def edit_account():
             settings.afternoon = False
 
         if reminder_form.reminder_evening.data:
-            settings.evening= True
+            settings.evening = True
         else:
             settings.evening = False
+
+        if reminder_form.weight_day.data > 0:
+            settings.weight_day = reminder_form.weight_day.data
+        else:
+            settings.weight_day = None
 
         db.session.add(settings)
         db.session.add(user)
@@ -554,6 +561,7 @@ def edit_account():
         reminder_form.reminder_morning.data = user.reminder_settings.morning
         reminder_form.reminder_afternoon.data = user.reminder_settings.afternoon
         reminder_form.reminder_evening.data = user.reminder_settings.evening
+        reminder_form.weight_day.data = user.reminder_settings.weight_day
 
     return render_template("admin/edit_account.html",title='Edit Account',form=form, reminder_form=reminder_form)
 
@@ -645,6 +653,91 @@ def entries_ajax_search():
     entrylist = sorted(set(entrylist))
 
     return Response(json.dumps(entrylist),  mimetype='application/json')
+
+@admin.route('/weight', methods=['GET','POST'])
+@login_required
+def weighttracker():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    form = WeightForm()
+
+    if form.validate_on_submit():
+
+        weight = WeightTracking(weight = form.weight.data, timestamp = datetime.utcnow(), \
+                                user_id = g.user.id)
+
+        db.session.add(weight)
+        db.session.commit()
+
+        if g.user.weight_tracking.count() == 1:
+            message = Markup('Well done on adding your first Weight Tracker entry!<br /><br />After you add your \
+                    second entry your Weight Tracking graph will start to take shape.<br /><br /> \
+                    We recommend you record your weight at the same time each week to avoid the \
+                    normal fluctuations that occur day-to-day.<br /><br /> \
+                    <strong><a href="' + url_for('admin.edit_account') + '">Click here to set up \
+                    a weekly reminder email</a></strong>')
+            flash(message)
+        else:
+            flash('Weight recorded successfully')
+
+        return redirect(url_for('admin.weighttracker'))
+
+    today = get_today_timezone_aware()
+    tomorrow = today + timedelta(days=1)
+
+    today_weight = WeightTracking.query.filter(WeightTracking.user_id == g.user.id).filter \
+                                        (WeightTracking.timestamp>=today).filter \
+                                        (WeightTracking.timestamp<tomorrow).first()
+
+    return render_template("admin/weight.html", title='Weight Tracking', \
+                            weight_tracking = g.user.weight_tracking, \
+                            target_weights = g.user.target_weights, form = form, \
+                            today_weight = today_weight)
+
+@admin.route('/weight/settings', methods=['GET','POST'])
+@login_required
+def weight_settings():
+
+    if not g.user.is_confirmed():
+        return redirect(url_for('admin.unconfirmed'))
+
+    form = WeightSettingsForm()
+    removeform = RemoveTargetForm()
+
+    if form.validate_on_submit():
+
+        target_date = datetime.strptime(form.target_date.data.strip(), "%d-%m-%Y").date()
+
+        target = TargetWeight(weight=form.weight.data, target_date=target_date, \
+                              timestamp=datetime.utcnow(), user_id=g.user.id)
+
+        db.session.add(target)
+        db.session.commit()
+
+        return redirect(url_for('admin.weight_settings'))
+
+    return render_template("admin/weight_settings.html", title='Weight Tracking Settings', \
+                            target_weights = g.user.target_weights, form = form, \
+                            removeform = removeform)
+
+@admin.route('/weight/targets/<int:id>/remove', methods=['POST'])
+@login_required
+def remove_target(id):
+
+    form = RemoveEntryForm()
+
+    if form.validate_on_submit():
+
+        target = TargetWeight.query.filter(TargetWeight.id == id, TargetWeight.user_id == g.user.id).first_or_404()
+        db.session.delete(target)
+        db.session.commit()
+
+        return redirect(url_for('admin.weight_settings'))
+
+    else:
+        return redirect(url_for('admin.home'))
 
 @lm.user_loader
 def load_user(id):

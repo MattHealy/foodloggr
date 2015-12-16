@@ -8,6 +8,19 @@ from .email import send_email
 import os.path
 import pytz
 
+class TargetWeight(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    target_date = db.Column(db.DateTime)
+    weight = db.Column(db.Float)
+
+class WeightTracking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    weight = db.Column(db.Float)
+
 class HelpRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -53,6 +66,11 @@ class User(db.Model):
               )
 
     reminder_settings = db.relationship('ReminderSetting', backref='user', cascade="all, delete", uselist=False)
+
+    weight_tracking = db.relationship('WeightTracking', backref='user', lazy='dynamic',
+                                      cascade="all, delete", order_by="WeightTracking.timestamp")
+    target_weights = db.relationship('TargetWeight', backref='user', lazy='dynamic',
+                                      cascade="all, delete", order_by="TargetWeight.target_date")
 
     def get_photo(self):
         if self.photo:
@@ -206,5 +224,6 @@ class ReminderSetting(db.Model):
     morning = db.Column(db.Boolean)
     afternoon = db.Column(db.Boolean)
     evening = db.Column(db.Boolean)
+    weight_day = db.Column(db.Integer)
          
 db.event.listen(User.email, 'set', User.on_changed_email)

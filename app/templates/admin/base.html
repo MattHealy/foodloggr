@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
     <!-- Custom Fonts -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui/jquery-ui.css') }}">
     <link rel='stylesheet' href="{{ url_for('static', filename='fullcalendar/fullcalendar.css') }}" />
     <link rel="icon" sizes="192x192" href="{{ url_for('static', filename="img/foodloggr-icon-original.png") }}">
@@ -187,6 +187,9 @@
                     <li{% if request.path=='/app/calendar' %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.calendar') }}"><i class="fa fa-fw fa-calendar"></i> Calendar</a>
                     </li>
+                    <li{% if request.path=='/app/weight' %} class="active"{% endif %}>
+                        <a href="{{ url_for('admin.weighttracker') }}"><i class="fa fa-fw fa-balance-scale"></i> Weight Tracker</a>
+                    </li>
                     <li{% if request.path=='/app/help' %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.help') }}"><i class="fa fa-fw fa-question-circle"></i> Help</a>
                     </li>
@@ -255,6 +258,7 @@
 
     <script src="{{ url_for('static', filename='jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='fullcalendar/fullcalendar.js') }}"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script>
 
@@ -265,6 +269,10 @@
                  onSelect: function() {
                                 $("#datepicker-form").submit();
                            }
+             });
+
+             $(".datepicker-input").datepicker({
+                 dateFormat: "dd-mm-yy"
              });
 
              $("button.delete-button").click(function() {
