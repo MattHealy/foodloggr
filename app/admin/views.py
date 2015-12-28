@@ -663,9 +663,11 @@ def weighttracker():
 
     form = WeightForm()
 
+    today = get_today_timezone_aware()
+
     if form.validate_on_submit():
 
-        weight = WeightTracking(weight = form.weight.data, timestamp = datetime.utcnow(), \
+        weight = WeightTracking(weight = form.weight.data, timestamp = today, \
                                 user_id = g.user.id)
 
         db.session.add(weight)
@@ -684,7 +686,6 @@ def weighttracker():
 
         return redirect(url_for('admin.weighttracker'))
 
-    today = get_today_timezone_aware()
     tomorrow = today + timedelta(days=1)
 
     today_weight = WeightTracking.query.filter(WeightTracking.user_id == g.user.id).filter \
