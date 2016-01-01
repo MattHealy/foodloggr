@@ -719,7 +719,7 @@ def weight_settings():
 
         return redirect(url_for('admin.weight_settings'))
 
-    return render_template("admin/weight_settings.html", title='Weight Tracking Settings', \
+    return render_template("admin/weight_settings.html", title='Set Weight Targets', \
                             target_weights = g.user.target_weights, form = form, \
                             removeform = removeform)
 

@@ -188,7 +188,7 @@
                         <a href="{{ url_for('admin.calendar') }}"><i class="fa fa-fw fa-calendar"></i> Calendar</a>
                     </li>
                     <li{% if request.path=='/app/weight' %} class="active"{% endif %}>
-                        <a href="{{ url_for('admin.weighttracker') }}"><i class="fa fa-fw fa-balance-scale"></i> Weight Tracker</a>
+                        <a href="{{ url_for('admin.weighttracker') }}"><i class="fa fa-fw fa-balance-scale"></i> Weight Tracker <sup><span style="color: yellow;">new!</span></sup></a>
                     </li>
                     <li{% if request.path=='/app/help' %} class="active"{% endif %}>
                         <a href="{{ url_for('admin.help') }}"><i class="fa fa-fw fa-question-circle"></i> Help</a>
