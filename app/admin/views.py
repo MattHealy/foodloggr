@@ -675,7 +675,7 @@ def weighttracker():
 
         if g.user.weight_tracking.count() == 1:
             message = Markup('Well done on adding your first Weight Tracker entry!<br /><br />After you add your \
-                    second entry your Weight Tracking graph will start to take shape.<br /><br /> \
+                    second entry your Weight Tracker graph will start to take shape.<br /><br /> \
                     We recommend you record your weight at the same time each week to avoid the \
                     normal fluctuations that occur day-to-day.<br /><br /> \
                     <strong><a href="' + url_for('admin.edit_account') + '">Click here to set up \
@@ -692,7 +692,7 @@ def weighttracker():
                                         (WeightTracking.timestamp>=today).filter \
                                         (WeightTracking.timestamp<tomorrow).first()
 
-    return render_template("admin/weight.html", title='Weight Tracking', \
+    return render_template("admin/weight.html", title='Weight Tracker', \
                             weight_tracking = g.user.weight_tracking, \
                             target_weights = g.user.target_weights, form = form, \
                             today_weight = today_weight)
