@@ -241,6 +241,7 @@
         {% block content %}
         {% endblock %}
 
+
             </div>
             <!-- /.container-fluid -->
 
@@ -257,6 +258,7 @@
 
     <script src="{{ url_for('static', filename='jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='fullcalendar/fullcalendar.js') }}"></script>
+
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script>
@@ -383,6 +385,8 @@
 
     </script>
 
+{% if not debug %}
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -394,9 +398,12 @@
 
 </script>
 
+{% endif %}
+
     {% endblock %}
 
 {% endblock %}
+
 </body>
 
 </html>

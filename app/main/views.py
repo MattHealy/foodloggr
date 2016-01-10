@@ -14,6 +14,10 @@ from ..oauth import OAuthSignIn
 from ..tools import s3_upload
 from ..delayed_emails import reminder_email
 
+@main.context_processor
+def inject_debug():
+    return dict(debug = current_app.config['DEBUG'])
+
 @main.before_request
 def before_request():
     g.user = current_user

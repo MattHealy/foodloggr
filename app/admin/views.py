@@ -16,6 +16,10 @@ import pytz
 import json
 import requests
 
+@admin.context_processor
+def inject_debug():
+    return dict(debug = current_app.config['DEBUG'])
+
 @admin.before_request
 def before_request():
     g.user = current_user
