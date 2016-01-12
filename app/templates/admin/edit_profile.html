@@ -9,8 +9,8 @@
                         {{ form.hidden_tag() }}
                         <div class="form-group">
 
-                            <label class="col-sm-2 control-label" for="first_name">First Name</label>
-                            <div class="col-sm-4">
+                            <label class="col-xs-12 col-sm-2 control-label" for="first_name">First Name</label>
+                            <div class="col-xs-8 col-sm-4">
                             {{ form.first_name(placeholder="e.g. Fred", class="form-control", required="required", autofocus="autofocus") }}
                             {% for error in form.errors.first_name %}
                                 <span style="color: red;">[{{error}}]</span>
@@ -21,8 +21,8 @@
 
                         <div class="form-group">
 
-                            <label class="col-sm-2 control-label" for="last_name">Last Name</label>
-                            <div class="col-sm-4">
+                            <label class="col-xs-12 col-sm-2 control-label" for="last_name">Last Name</label>
+                            <div class="col-xs-8 col-sm-4">
                             {{ form.last_name(placeholder="e.g. Smith", class="form-control", required="required") }}
                             {% for error in form.errors.last_name %}
                                 <span style="color: red;">[{{error}}]</span>
@@ -33,8 +33,8 @@
 
                         <div class="form-group">
 
-                            <label class="col-sm-2 control-label" for="email">Email address</label>
-                            <div class="col-sm-4">
+                            <label class="col-xs-12 col-sm-2 control-label" for="email">Email address</label>
+                            <div class="col-xs-8 col-sm-4">
 
                             {% if g.user.social_id %}
                                 {{ form.email(placeholder="e.g. test@gmail.com", class="form-control", required="required", readonly="readonly") }}
@@ -51,8 +51,8 @@
 
                         <div class="form-group">
 
-                            <label class="col-sm-2 control-label" for="timezone">Timezone</label>
-                            <div class="col-sm-4">
+                            <label class="col-xs-12 col-sm-2 control-label" for="timezone">Timezone</label>
+                            <div class="col-xs-8 col-sm-4">
                             {{ form.timezone(placeholder="e.g. test@gmail.com", class="form-control", required="required") }}
                             {% for error in form.errors.timezone %}
                                 <span style="color: red;">[{{error}}]</span>
@@ -63,8 +63,8 @@
 
                         <div class="form-group">
 
-                            <label class="col-sm-2 control-label" for="photo">Photo</label>
-                            <div class="col-sm-4">
+                            <label class="col-xs-12 col-sm-2 control-label" for="photo">Photo</label>
+                            <div class="col-xs-8 col-sm-4">
                             {% if g.user.photo %}
                             <p class="form-control-static">
                                <img src="{{ g.user.get_photo() }}" height="100" />
