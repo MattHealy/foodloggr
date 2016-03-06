@@ -10,3 +10,4 @@ app/*.pyc
 tmp/*
 celerybeat-schedule
 celerybeat.pid
+deploy.sh
